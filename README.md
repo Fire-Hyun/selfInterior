@@ -7,8 +7,8 @@
 - 현재 단계: Phase 0 완료, Phase 2.1 구현 완료
 - 이번 범위: 주소 검색, 프로젝트 생성, 프로젝트-속성 연결, 도면 후보 저장과 선택, 프로젝트 홈 대시보드, 공정 플래너, 사진 질문까지
 - 원격 저장소: `https://github.com/Fire-Hyun/selfInterior.git`
-- 최근 커밋: `d0e66f7` `feat: add process plan vertical slice`
-- 최근 push: 2026-03-28 `main` 브랜치 push 성공
+- 최근 커밋: `0053206` `feat: add visual question vertical slice`
+- 최근 push: 2026-03-28 `0053206` `origin/main` push 성공
 - 설계 기준 문서:
   - `interior_architecture_spec_ko.md`
   - `codex_prompts_ko.txt`
