@@ -32,3 +32,4 @@ Phase 0 점검 중 아래 상태를 확인했다.
 - 이번 턴에서는 상위 repo 범위 충돌 위험 때문에 commit/push를 보류하고 문서에 이유를 남긴다.
 - 원격 저장소 URL: `https://github.com/Fire-Hyun/selfInterior.git`
 - 2026-03-28 기준 `main` 브랜치 초기 push 성공
+- 2026-03-28 기준 `4cb1d12` `feat: add project home dashboard slice` 커밋 후 `origin/main` push 성공
