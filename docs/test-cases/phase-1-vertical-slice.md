@@ -1,36 +1,37 @@
 # Phase 1 vertical slice 테스트 케이스
 
-## 주소 검색
+## 단지 검색
 
-- 검색어로 주소 후보가 반환된다.
-- 주소 provider 하나가 실패해도 fallback 후보가 반환된다.
-- 결과에는 도로명 주소, 지번 주소, 좌표, 동 후보 정보가 포함된다.
+- 단지명 일부만 입력해도 후보가 반환된다.
+- 1차 주소 provider가 비어 있어도 fallback 결과가 반환된다.
+- 결과에는 단지명, 도로명 주소, 좌표, 평형 힌트가 포함된다.
 
 ## 집 정보 resolve
 
-- 선택한 주소로 `Property` 요약이 반환된다.
-- 외부 참조 목록이 반환된다.
-- integration log가 남는다.
+- 선택한 단지로 `Property` 요약이 반환된다.
+- 평형 버튼에 사용할 `areaOptions`가 반환된다.
+- 외부 참조 목록과 integration log가 기록된다.
 
 ## 프로젝트 생성
 
 - 프로젝트가 생성된다.
-- 기본 `project_scope`가 함께 준비된다.
-
-## 프로젝트-집 연결
-
-- 프로젝트에 속성을 연결할 수 있다.
-- 이후 도면 resolve 입력으로 사용할 수 있다.
+- 선택한 평형으로 `Property`가 연결된다.
+- 이후 도면 resolve 입력으로 사용된다.
 
 ## 도면 후보 resolve
 
 - provider 전략이 실행된다.
 - 후보가 저장된다.
-- 각 후보에 `source`, `license_status`, `confidence`, `raw_payload_ref`, `normalized_plan_ref`가 기록된다.
+- 각 후보에 `source`, `license_status`, `confidence`, `raw_payload_ref`, `normalized_plan_ref`가 남는다.
 
-## 프로젝트 홈
+## 프로젝트 홈과 상세
 
-- 프로젝트 홈 응답이 우리 집 요약 카드와 선택된 도면 요약 카드를 반환한다.
-- 도면 후보는 선택 여부와 수동 확인 항목 상태를 반영해 다음 액션으로 계산된다.
-- `VisualQuestion`, `ExpertLead`는 placeholder 카드로 노출된다.
-- web에서 `/projects/{projectId}/home`으로 진입할 수 있다.
+- 상세 응답에 집 요약과 선택 평형이 포함된다.
+- 도면 후보 선택 결과가 프로젝트 상세와 홈에 반영된다.
+- `/projects/{projectId}/home`으로 진입 가능하다.
+
+## 로컬 실행
+
+- `npm run dev:up` 기본 동작으로 Docker Compose의 `postgres`, `redis`, `api`가 실행된다.
+- web은 로컬 창에서 실행된다.
+- `npm run dev:status`로 상태를 확인할 수 있다.

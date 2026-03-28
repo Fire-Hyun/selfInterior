@@ -1,6 +1,7 @@
 package com.selfinterior.api.property;
 
 import com.selfinterior.api.property.PropertyController.ExternalRefResponse;
+import com.selfinterior.api.property.PropertyController.PropertyAreaOptionResponse;
 import com.selfinterior.api.property.PropertyController.PropertyResolveResponse;
 import com.selfinterior.api.property.PropertyController.PropertySummaryResponse;
 import java.util.List;
@@ -17,6 +18,7 @@ public final class PropertyMapper {
             resolution.apartmentName(),
             resolution.completionYear(),
             resolution.householdCount(),
+            toAreaOptions(resolution),
             resolution.exclusiveAreaCandidates(),
             resolution.roomCountCandidates(),
             resolution.bathroomCountCandidates(),
@@ -27,6 +29,34 @@ public final class PropertyMapper {
         resolution.externalRefs().stream()
             .map(ref -> new ExternalRefResponse(ref.provider(), ref.refType(), ref.externalKey()))
             .toList());
+  }
+
+  private static List<PropertyAreaOptionResponse> toAreaOptions(PropertyResolution resolution) {
+    int roomCount =
+        resolution.roomCountCandidates().isEmpty() ? 0 : resolution.roomCountCandidates().get(0);
+    int bathroomCount =
+        resolution.bathroomCountCandidates().isEmpty()
+            ? 0
+            : resolution.bathroomCountCandidates().get(0);
+
+    return resolution.exclusiveAreaCandidates().stream()
+        .map(
+            area ->
+                new PropertyAreaOptionResponse(
+                    formatAreaLabel(area), area, null, roomCount, bathroomCount))
+        .toList();
+  }
+
+  private static String formatAreaLabel(Double area) {
+    if (area == null) {
+      return "Area check required";
+    }
+
+    if (Math.floor(area) == area) {
+      return "Area " + area.intValue() + "m2";
+    }
+
+    return "Area " + area + "m2";
   }
 
   public static List<ExternalPropertyRefEntity> toEntities(

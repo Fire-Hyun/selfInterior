@@ -48,6 +48,7 @@ class AddressSearchServiceTest {
                     "1171011100",
                     2018,
                     9510,
+                    List.of(59.84, 84.81),
                     Map.of("provider", "JUSO"))));
     when(integrationLogService.logSuccess(any(), any(), any(), any(), any(Long.class)))
         .thenReturn(UUID.randomUUID());
@@ -58,5 +59,7 @@ class AddressSearchServiceTest {
 
     assertThat(response.candidates()).hasSize(1);
     assertThat(response.candidates().get(0).displayName()).isEqualTo("Helio City");
+    assertThat(response.candidates().get(0).complexHint().areaHints())
+        .containsExactly(59.84, 84.81);
   }
 }

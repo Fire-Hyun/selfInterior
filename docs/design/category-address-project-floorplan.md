@@ -2,40 +2,42 @@
 
 ## 범위
 
-이 문서는 첫 vertical slice에서 구현하는 `AddressResolution -> Property -> Project -> FloorPlanCandidate` 흐름의 카테고리 설계를 정의한다.
+이 문서는 초기 vertical slice에서 구현하는 `AddressResolution -> Property -> Project -> FloorPlanCandidate` 흐름을 정의한다.
 
-## 사용자 흐름
+## 기본 사용자 흐름
 
-1. 홈에서 주소 또는 단지명을 검색한다.
-2. 검색 결과에서 집 후보를 선택한다.
-3. 동/호 등 상세 옵션을 보정한다.
-4. 시스템이 `Property` 요약과 외부 참조를 resolve 한다.
-5. 사용자가 프로젝트를 생성한다.
-6. 프로젝트에 집 정보를 연결한다.
-7. 시스템이 도면 provider 전략을 실행해 `FloorPlanCandidate`를 저장한다.
-8. 사용자는 후보 리스트와 신뢰도, 출처, 라이선스 상태를 본다.
-9. 사용자는 가장 적합한 후보를 선택하고 프로젝트 상세 요약을 확인한다.
+1. 사용자는 정확한 동/호가 아니라 아파트 단지명 또는 도로명 수준으로 검색한다.
+2. 검색 결과에서 단지 후보를 선택한다.
+3. 시스템이 선택된 단지의 `Property` 요약과 평형 후보를 resolve 한다.
+4. 사용자는 평형 버튼 또는 메뉴 중 하나를 선택한다.
+5. 사용자는 프로젝트를 생성한다.
+6. 프로젝트에 선택한 단지와 평형 정보를 연결한다.
+7. 시스템이 provider 전략으로 `FloorPlanCandidate`를 수집한다.
+8. 사용자는 출처, 라이선스, 신뢰도를 보고 도면 후보를 선택한다.
+9. 선택된 도면 후보가 프로젝트 상세와 홈 read model에 반영된다.
 
-## 도메인 모델 요약
+## 도메인 요약
 
 ### `AddressResolution`
 
 - 입력 검색어
-- 정규화 주소
+- 정규화된 단지명
+- 도로명 주소
+- 지번 주소
 - 좌표
 - 도로명 코드
 - 법정동 코드
-- 신뢰도
-- 원본 payload 참조
+- 검색 provenance
+- raw payload 참조
 
 ### `Property`
 
+- 단지명
 - 주소
-- 아파트명
-- 동/호
+- 준공 연도
+- 세대 수
 - 평형 후보
-- 세대수
-- 준공연도
+- 방/욕실 후보
 - 외부 참조 목록
 
 ### `Project`
@@ -45,6 +47,7 @@
 - 거주 상태
 - 예산 범위
 - 연결된 `Property`
+- 사용자가 선택한 평형
 - 선택된 `FloorPlanCandidate`
 
 ### `FloorPlanCandidate`
@@ -59,49 +62,51 @@
 
 ## 애플리케이션 계층
 
-### 웹
+### Web
 
-- 홈 검색 페이지
-- 검색 결과 및 상세 옵션 선택
-- 프로젝트 생성 폼
-- 도면 후보 요약 화면
-- 프로젝트 상세 상태 패널
-- 프로젝트 홈 대시보드
+- 단지 검색 입력
+- 검색 결과 목록
+- 단지 선택 후 평형 버튼 표시
+- 프로젝트 생성 CTA
+- 도면 후보 목록 및 선택
+- 프로젝트 홈 진입
 
 ### API
 
-- controller: request/response 경계
-- application service: use case orchestration
-- domain service: provider 전략 및 fallback
-- adapter: 외부 provider mock/real 구현
+- controller: 요청/응답 경계
+- application service: 검색, resolve, 프로젝트 생성 orchestration
+- provider adapter: 주소/단지 정보/도면 후보 mock 또는 real 구현
 - persistence: JPA entity, repository, Flyway
-- read model: 프로젝트 홈 카드 조합 응답
+- read model: 프로젝트 홈과 상세 응답 조합
 
 ## provider 전략
 
-### 주소 전략
+### 주소 검색
 
-- 1차: `KakaoAddressClient`
-- 2차: `JusoAddressClient`
-- 실패 시 부분 결과를 유지하고 사용자 선택 가능한 후보를 반환한다.
+- 1차 `KakaoAddressClient`
+- 2차 `JusoAddressClient`
+- 검색 실패 시 fallback 하되, 결과는 단지 후보 단위로 노출한다.
 
-### 속성 전략
+### 속성 resolve
 
-- `KaptClient`로 단지 힌트 확보
-- `BuildingHubClient`, `HousingHubClient`, `VworldClient`로 보강
-- provider 실패는 integration log에 남기고 가능한 데이터만 조합한다.
+- `KaptClient`로 단지 요약과 평형 후보를 조회한다.
+- `BuildingHubClient`, `HousingHubClient`, `VworldClient`로 외부 참조와 지번 주소를 보강한다.
+- 기본 온보딩에서는 동/호 없이 단지와 평형만 확정한다.
+- 상세 주소는 이후 phase의 보정 흐름으로 분리한다.
 
-### 도면 전략
+### 도면 확보
 
 1. `OfficialFloorPlanClient`
 2. `LicensedFloorPlanClient`
-3. 내부 근사 생성 fallback
+3. `ApproximateFloorPlanGenerator`
 
-선택 정책:
+모든 후보에 대해 다음 provenance를 남긴다.
 
-- 최초 resolve 시 최고 신뢰도 후보를 자동 선택한다.
-- 사용자는 이후 후보를 수동 선택할 수 있다.
-- 선택 변경 시 프로젝트 상세 응답이 같은 기준을 참조한다.
+- `confidence`
+- `source`
+- `license_status`
+- `raw_payload_ref`
+- `normalized_plan_ref`
 
 ## persistence 최소 테이블
 
@@ -115,14 +120,13 @@
 - `normalized_floor_plans`
 - `integration_call_logs`
 
-## 테스트 포인트
+## 테스트 기준
 
-- 주소 검색 성공
-- 주소 검색 fallback
-- 속성 resolve 시 외부 참조 결합
-- 프로젝트 생성 후 속성 연결
-- 도면 resolve 시 후보 저장
-- provider provenance 필드 저장
+- 단지명 검색 성공
+- 주소 provider fallback 동작
+- 단지 선택 후 평형 후보 resolve
+- 평형 선택 뒤 프로젝트 생성과 속성 연결
+- 도면 후보 resolve 시 provenance 필드 기록
 - 도면 후보 수동 선택 시 기존 선택 해제
-- 프로젝트 상세 응답에 property/selected plan 요약 포함
-- 프로젝트 홈 응답에 우리 집 요약/다음 액션/placeholder 카드 포함
+- 프로젝트 상세 응답에 선택 평형과 선택 도면 포함
+- 프로젝트 홈 응답에 집 요약과 다음 액션 포함

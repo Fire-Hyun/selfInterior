@@ -42,6 +42,7 @@ public class PropertyController {
       String apartmentName,
       int completionYear,
       int householdCount,
+      List<PropertyAreaOptionResponse> areaOptions,
       List<Double> exclusiveAreaCandidates,
       List<Integer> roomCountCandidates,
       List<Integer> bathroomCountCandidates,
@@ -49,6 +50,13 @@ public class PropertyController {
       String jibunAddress,
       String dongNo,
       String hoNo) {}
+
+  public record PropertyAreaOptionResponse(
+      String label,
+      Double exclusiveAreaM2,
+      Double supplyAreaM2,
+      Integer roomCount,
+      Integer bathroomCount) {}
 
   public record ExternalRefResponse(String provider, String refType, String externalKey) {}
 

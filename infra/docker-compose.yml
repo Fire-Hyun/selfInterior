@@ -19,6 +19,28 @@ services:
     volumes:
       - redis-data:/data
 
+  api:
+    image: gradle:8.14.3-jdk21
+    container_name: selfinterior-api
+    working_dir: /workspace/apps/api
+    command: bash -lc "chmod +x gradlew && ./gradlew bootRun --no-daemon"
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/selfinterior
+      DB_USERNAME: selfinterior
+      DB_PASSWORD: selfinterior
+      REDIS_URL: redis://redis:6379
+      SPRING_PROFILES_ACTIVE: local
+      DEFAULT_OWNER_USER_ID: 11111111-1111-1111-1111-111111111111
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - '8080:8080'
+    volumes:
+      - ..:/workspace
+      - gradle-cache:/home/gradle/.gradle
+
 volumes:
   postgres-data:
   redis-data:
+  gradle-cache:

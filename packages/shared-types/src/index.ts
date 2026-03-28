@@ -39,6 +39,14 @@ export interface ApiResponse<T> {
   } | null;
 }
 
+export interface PropertyAreaOption {
+  label: string;
+  exclusiveAreaM2: number;
+  supplyAreaM2?: number;
+  roomCount?: number;
+  bathroomCount?: number;
+}
+
 export interface AddressSearchCandidate {
   displayName: string;
   roadAddress: string;
@@ -55,6 +63,7 @@ export interface AddressSearchCandidate {
   complexHint: {
     completionYear: number;
     householdCount: number;
+    areaHints: number[];
   };
 }
 
@@ -88,6 +97,7 @@ export interface PropertySummary {
   apartmentName: string;
   completionYear: number;
   householdCount: number;
+  areaOptions: PropertyAreaOption[];
   exclusiveAreaCandidates: number[];
   roomCountCandidates: number[];
   bathroomCountCandidates: number[];

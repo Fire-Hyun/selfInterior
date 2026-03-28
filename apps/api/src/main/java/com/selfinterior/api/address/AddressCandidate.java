@@ -19,4 +19,5 @@ public record AddressCandidate(
     String legalDongCode,
     int completionYear,
     int householdCount,
+    List<Double> areaHints,
     Map<String, Object> rawPayload) {}

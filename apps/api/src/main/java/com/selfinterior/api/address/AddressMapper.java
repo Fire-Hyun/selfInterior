@@ -20,6 +20,7 @@ public final class AddressMapper {
         candidate.buildingMainNo(),
         candidate.buildingSubNo(),
         candidate.legalDongCode(),
-        new ComplexHintDto(candidate.completionYear(), candidate.householdCount()));
+        new ComplexHintDto(
+            candidate.completionYear(), candidate.householdCount(), candidate.areaHints()));
   }
 }

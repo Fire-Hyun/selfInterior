@@ -49,7 +49,7 @@ public class AddressController {
       String legalDongCode,
       ComplexHintDto complexHint) {}
 
-  public record ComplexHintDto(int completionYear, int householdCount) {}
+  public record ComplexHintDto(int completionYear, int householdCount, List<Double> areaHints) {}
 
   public record DetailOptionsRequest(
       @NotBlank String roadCode,
