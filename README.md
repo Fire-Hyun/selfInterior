@@ -7,6 +7,8 @@
 - 현재 단계: Phase 3.0 구현 완료, Phase 1.3 온보딩 개선 반영
 - 현재 기본 온보딩: `단지명 검색 -> 평형 선택 -> 프로젝트 생성 -> 도면 후보 선택`
 - 원격 저장소: [github.com/Fire-Hyun/selfInterior](https://github.com/Fire-Hyun/selfInterior)
+- 최신 커밋: `d6e1b3d` `feat: switch onboarding to complex-first area flow`
+- 최신 push: 2026-03-29 `origin/main` 반영 완료
 - 기준 문서:
   - `interior_architecture_spec_ko.md`
   - `codex_prompts_ko.txt`
