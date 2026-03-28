@@ -12,6 +12,9 @@ export type LicenseStatus =
   | 'RESTRICTED'
   | 'USER_OWNED'
   | 'INTERNAL';
+export type ProcessPlanStatus = 'IN_PROGRESS' | 'COMPLETED';
+export type ProcessStepStatus = 'TODO' | 'IN_PROGRESS' | 'DONE';
+export type ProcessTaskGroup = 'PREPARE' | 'DECISION' | 'NEXT';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -196,6 +199,59 @@ export interface ProjectHomeResponse {
   nextActions: ProjectHomeAction[];
   recentQuestions: ProjectHomePlaceholderCard;
   recommendedExperts: ProjectHomePlaceholderCard;
+}
+
+export interface ProcessStepSummary {
+  stepKey: string;
+  title: string;
+  status: ProcessStepStatus;
+  sortOrder: number;
+  durationDays: number;
+  required: boolean;
+  completedTaskCount: number;
+  totalTaskCount: number;
+}
+
+export interface ProcessPlanResponse {
+  planId: string;
+  status: ProcessPlanStatus;
+  currentStepKey?: string;
+  progressPercent: number;
+  generatedAt: string;
+  steps: ProcessStepSummary[];
+}
+
+export interface ProcessTask {
+  id: string;
+  taskGroup: ProcessTaskGroup;
+  itemOrder: number;
+  title: string;
+  description?: string;
+  completed: boolean;
+}
+
+export interface ProcessPlanStepDetailResponse {
+  planId: string;
+  step: ProcessStepSummary;
+  purposeText: string;
+  startCheckIntro: string;
+  decisionPoints: string[];
+  selfWorkText: string;
+  expertRequiredText: string;
+  mistakesText: string;
+  nextStepChecks: string[];
+  tasks: ProcessTask[];
+}
+
+export interface ProcessTaskToggleRequest {
+  completed: boolean;
+}
+
+export interface ProcessTaskToggleResponse {
+  taskId: string;
+  completed: boolean;
+  stepStatus: ProcessStepStatus;
+  currentStepKey?: string;
 }
 
 export interface AttachPropertyRequest {

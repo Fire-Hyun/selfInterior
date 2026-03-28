@@ -8,6 +8,11 @@ import com.selfinterior.api.floorplan.FloorPlanSourceEntity;
 import com.selfinterior.api.floorplan.FloorPlanSourceRepository;
 import com.selfinterior.api.floorplan.NormalizedFloorPlanEntity;
 import com.selfinterior.api.floorplan.NormalizedFloorPlanRepository;
+import com.selfinterior.api.process.ProcessPlanStatus;
+import com.selfinterior.api.process.ProjectProcessPlanEntity;
+import com.selfinterior.api.process.ProjectProcessPlanRepository;
+import com.selfinterior.api.process.ProjectProcessStepEntity;
+import com.selfinterior.api.process.ProjectProcessStepRepository;
 import com.selfinterior.api.project.ProjectController.HomeActionResponse;
 import com.selfinterior.api.project.ProjectController.HomePlaceholderCardResponse;
 import com.selfinterior.api.project.ProjectController.ProjectHomeResponse;
@@ -28,6 +33,8 @@ public class ProjectHomeService {
   private final FloorPlanCandidateRepository floorPlanCandidateRepository;
   private final FloorPlanSourceRepository floorPlanSourceRepository;
   private final NormalizedFloorPlanRepository normalizedFloorPlanRepository;
+  private final ProjectProcessPlanRepository projectProcessPlanRepository;
+  private final ProjectProcessStepRepository projectProcessStepRepository;
 
   public ProjectHomeResponse get(String projectId) {
     ProjectEntity project = findProject(projectId);
@@ -43,13 +50,22 @@ public class ProjectHomeService {
                 .findById(selectedCandidate.getFloorPlanSourceId())
                 .orElse(null);
     List<String> manualCheckItems = loadManualCheckItems(selectedCandidate);
+    ProjectProcessPlanEntity processPlan =
+        projectProcessPlanRepository.findByProjectId(project.getId()).orElse(null);
+    ProjectProcessStepEntity currentProcessStep = loadCurrentProcessStep(processPlan);
 
     return new ProjectHomeResponse(
         ProjectMapper.toHomeProject(project),
         ProjectMapper.toHomeProperty(property),
         ProjectMapper.toHomeFloorPlan(
             selectedCandidate, selectedSource, candidates.size(), manualCheckItems),
-        buildNextActions(project.getId(), property, selectedCandidate, manualCheckItems),
+        buildNextActions(
+            project.getId(),
+            property,
+            selectedCandidate,
+            manualCheckItems,
+            processPlan,
+            currentProcessStep),
         buildPlaceholderCard(
             "최근 질문",
             "PENDING_INTEGRATION",
@@ -88,7 +104,9 @@ public class ProjectHomeService {
       UUID projectId,
       PropertyEntity property,
       FloorPlanCandidateEntity selectedCandidate,
-      List<String> manualCheckItems) {
+      List<String> manualCheckItems,
+      ProjectProcessPlanEntity processPlan,
+      ProjectProcessStepEntity currentProcessStep) {
     List<HomeActionResponse> actions = new ArrayList<>();
 
     actions.add(
@@ -136,17 +154,41 @@ public class ProjectHomeService {
               "/projects/" + projectId + "/home#plan"));
     }
 
-    actions.add(
-        new HomeActionResponse(
-            "PROCESS_PLAN",
-            "공정 플랜 연결 대기",
-            selectedCandidate == null
-                ? "도면 기준이 정해지면 ProcessPlan 초안을 연결할 수 있습니다."
-                : "다음 phase에서 ProcessPlan 도메인을 연결해 지금 해야 할 일을 실제 공정 기준으로 계산합니다.",
-            selectedCandidate == null ? "BLOCKED" : "UPCOMING",
-            "/projects/" + projectId + "/home#process"));
+    if (processPlan != null && currentProcessStep != null) {
+      actions.add(
+          new HomeActionResponse(
+              "PROCESS_PLAN",
+              processPlan.getPlanStatus() == ProcessPlanStatus.COMPLETED
+                  ? "공정 플랜 완료"
+                  : "현재 공정 체크리스트 검토",
+              processPlan.getPlanStatus() == ProcessPlanStatus.COMPLETED
+                  ? "모든 공정 체크리스트가 완료되었습니다."
+                  : currentProcessStep.getTitle() + " 단계의 체크리스트를 이어서 확인하세요.",
+              processPlan.getPlanStatus() == ProcessPlanStatus.COMPLETED ? "DONE" : "READY",
+              "/projects/" + projectId + "/process"));
+    } else {
+      actions.add(
+          new HomeActionResponse(
+              "PROCESS_PLAN",
+              "공정 플랜 생성",
+              selectedCandidate == null
+                  ? "도면 기준이 정해지면 공정 플랜을 생성할 수 있습니다."
+                  : "선택된 도면 후보를 기준으로 프로젝트별 공정 초안을 만들 수 있습니다.",
+              selectedCandidate == null ? "BLOCKED" : "READY",
+              "/projects/" + projectId + "/process"));
+    }
 
     return actions;
+  }
+
+  private ProjectProcessStepEntity loadCurrentProcessStep(ProjectProcessPlanEntity processPlan) {
+    if (processPlan == null || processPlan.getCurrentStepKey() == null) {
+      return null;
+    }
+
+    return projectProcessStepRepository
+        .findByProcessPlanIdAndStepKey(processPlan.getId(), processPlan.getCurrentStepKey())
+        .orElse(null);
   }
 
   private HomePlaceholderCardResponse buildPlaceholderCard(

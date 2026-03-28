@@ -12,6 +12,8 @@ import com.selfinterior.api.floorplan.FloorPlanSourceType;
 import com.selfinterior.api.floorplan.LicenseStatus;
 import com.selfinterior.api.floorplan.NormalizedFloorPlanEntity;
 import com.selfinterior.api.floorplan.NormalizedFloorPlanRepository;
+import com.selfinterior.api.process.ProjectProcessPlanRepository;
+import com.selfinterior.api.process.ProjectProcessStepRepository;
 import com.selfinterior.api.property.PropertyEntity;
 import com.selfinterior.api.property.PropertyRepository;
 import com.selfinterior.api.property.PropertyType;
@@ -32,6 +34,8 @@ class ProjectHomeServiceTest {
   @Mock private FloorPlanCandidateRepository floorPlanCandidateRepository;
   @Mock private FloorPlanSourceRepository floorPlanSourceRepository;
   @Mock private NormalizedFloorPlanRepository normalizedFloorPlanRepository;
+  @Mock private ProjectProcessPlanRepository projectProcessPlanRepository;
+  @Mock private ProjectProcessStepRepository projectProcessStepRepository;
 
   @InjectMocks private ProjectHomeService projectHomeService;
 
@@ -87,6 +91,7 @@ class ProjectHomeServiceTest {
     when(floorPlanSourceRepository.findById(sourceId)).thenReturn(Optional.of(source));
     when(normalizedFloorPlanRepository.findByFloorPlanCandidateId(candidateId))
         .thenReturn(Optional.of(normalized));
+    when(projectProcessPlanRepository.findByProjectId(projectId)).thenReturn(Optional.empty());
 
     var response = projectHomeService.get(projectId.toString());
 
@@ -117,6 +122,7 @@ class ProjectHomeServiceTest {
     when(propertyRepository.findByProjectId(projectId)).thenReturn(Optional.empty());
     when(floorPlanCandidateRepository.findByProjectIdOrderByConfidenceScoreDesc(projectId))
         .thenReturn(List.of());
+    when(projectProcessPlanRepository.findByProjectId(projectId)).thenReturn(Optional.empty());
 
     var response = projectHomeService.get(projectId.toString());
 

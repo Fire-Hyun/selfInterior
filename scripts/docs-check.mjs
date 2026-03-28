@@ -7,11 +7,15 @@ const requiredPaths = [
   'AGENTS.md',
   'docs/phases/phase-0.md',
   'docs/phases/phase-1.md',
+  'docs/phases/phase-2.md',
   'docs/design/category-address-project-floorplan.md',
+  'docs/design/category-process-plan.md',
   'docs/adr/ADR-0001-monorepo-provider-slice.md',
   'docs/adr/ADR-0002-project-home-read-model.md',
+  'docs/adr/ADR-0003-process-plan-catalog-snapshot.md',
   'docs/issues/2026-03-28-local-env-and-secret-state.md',
   'docs/test-cases/phase-1-vertical-slice.md',
+  'docs/test-cases/phase-2-process-plan.md',
   '.env.example',
 ];
 

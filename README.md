@@ -4,8 +4,8 @@
 
 ## 현재 상태
 
-- 현재 단계: Phase 0 완료, Phase 1.2 완료
-- 이번 범위: 주소 검색, 프로젝트 생성, 프로젝트-속성 연결, 도면 후보 저장과 선택, 프로젝트 홈 대시보드까지
+- 현재 단계: Phase 0 완료, Phase 2.0 완료
+- 이번 범위: 주소 검색, 프로젝트 생성, 프로젝트-속성 연결, 도면 후보 저장과 선택, 프로젝트 홈 대시보드, 공정 플래너까지
 - 원격 저장소: `https://github.com/Fire-Hyun/selfInterior.git`
 - 최근 커밋: `4cb1d12` `feat: add project home dashboard slice`
 - 최근 push: 2026-03-28 `main` 브랜치 push 성공
@@ -14,9 +14,12 @@
   - `codex_prompts_ko.txt`
   - `docs/phases/phase-0.md`
   - `docs/phases/phase-1.md`
+  - `docs/phases/phase-2.md`
   - `docs/design/category-address-project-floorplan.md`
+  - `docs/design/category-process-plan.md`
   - `docs/adr/ADR-0001-monorepo-provider-slice.md`
   - `docs/adr/ADR-0002-project-home-read-model.md`
+  - `docs/adr/ADR-0003-process-plan-catalog-snapshot.md`
 
 ## 저장소 구조
 
@@ -100,6 +103,7 @@ docker compose up -d postgres redis
 5. provider 기반 도면 후보 저장 및 조회
 6. 선택된 도면 후보를 프로젝트 상세에 반영
 7. 프로젝트 홈 카드로 다음 행동을 확인
+8. 공정 플랜 생성, 단계 상세 조회, 체크리스트 토글
 
 ## 차단 사항
 
