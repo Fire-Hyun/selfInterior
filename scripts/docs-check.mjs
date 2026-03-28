@@ -26,6 +26,7 @@ const requiredPaths = [
   'docs/test-cases/phase-2-visual-question.md',
   'docs/test-cases/phase-2-expert-lead.md',
   'docs/test-cases/phase-3-style.md',
+  'docs/runbooks/local-dev-quickstart.md',
   '.env.example',
 ];
 

@@ -7,6 +7,9 @@
     "packages/shared-types"
   ],
   "scripts": {
+    "dev:up": "powershell -ExecutionPolicy Bypass -File scripts/dev-up.ps1",
+    "dev:down": "powershell -ExecutionPolicy Bypass -File scripts/dev-down.ps1",
+    "dev:status": "powershell -ExecutionPolicy Bypass -File scripts/dev-status.ps1",
     "format": "prettier --write . && node scripts/run-api-task.mjs spotlessApply",
     "lint": "npm run lint --workspace @selfinterior/web && node scripts/run-api-task.mjs spotlessCheck",
     "typecheck": "npm run build --workspace @selfinterior/shared-types && npm run typecheck --workspace @selfinterior/web && node scripts/run-api-task.mjs compileJava",
