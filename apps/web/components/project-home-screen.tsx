@@ -91,6 +91,12 @@ export function ProjectHomeScreen({ projectId }: { projectId: string }) {
           <Link className="link-button inline-link" href="/">
             온보딩 화면으로 돌아가기
           </Link>
+          <Link
+            className="link-button inline-link"
+            href={`/projects/${projectId}/style`}
+          >
+            스타일 페이지 보기
+          </Link>
         </div>
         <div className="hero-panel">
           {state === 'loading' ? (

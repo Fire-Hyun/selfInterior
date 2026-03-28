@@ -221,6 +221,13 @@ select {
   resize: vertical;
 }
 
+.field-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(42, 66, 44, 0.88);
+}
+
 .primary-button,
 .secondary-button {
   min-height: 48px;

@@ -18,6 +18,7 @@ export type ProcessTaskGroup = 'PREPARE' | 'DECISION' | 'NEXT';
 export type VisualQuestionStatus = 'PROCESSING' | 'COMPLETED';
 export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 export type ExpertLeadStatus = 'NEW' | 'CONTACTED' | 'QUOTED' | 'WON' | 'LOST';
+export type StyleGenerationStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
 export type SpaceType =
   | 'LIVING_ROOM'
   | 'KITCHEN'
@@ -398,6 +399,61 @@ export interface CreateExpertLeadRequest {
 export interface CreateExpertLeadResponse {
   leadId: string;
   leadStatus: ExpertLeadStatus;
+}
+
+export interface StylePreset {
+  id: string;
+  key: string;
+  name: string;
+  description?: string;
+  promptTemplate: string;
+}
+
+export interface StylePresetListResponse {
+  presets: StylePreset[];
+}
+
+export interface GenerateStyleImagesRequest {
+  spaceTypes: SpaceType[];
+  stylePresetKey: string;
+  budgetLevel: string;
+  keepItems?: string[];
+  extraPrompt?: string;
+}
+
+export interface GenerateStyleImagesResponse {
+  imageCount: number;
+  imageIds: string[];
+}
+
+export interface StyleImage {
+  id: string;
+  spaceType: SpaceType;
+  stylePresetKey?: string;
+  stylePresetName?: string;
+  promptText: string;
+  negativePromptText?: string;
+  generationStatus: StyleGenerationStatus;
+  storageKey?: string;
+  thumbnailKey?: string;
+  seed?: string;
+  modelName?: string;
+  liked: boolean;
+  difficulty: string;
+  budgetImpact: string;
+  suggestedProcessSteps: string[];
+  metadata: Record<string, unknown>;
+}
+
+export interface StyleImageListResponse {
+  images: StyleImage[];
+}
+
+export interface LikeStyleImageResponse {
+  imageId: string;
+  liked: boolean;
+  selectedStylePresetKey?: string;
+  spaceType: SpaceType;
 }
 
 export interface AttachPropertyRequest {

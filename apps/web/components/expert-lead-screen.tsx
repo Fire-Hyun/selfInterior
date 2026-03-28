@@ -162,6 +162,12 @@ export function ExpertLeadScreen({ projectId }: { projectId: string }) {
             >
               질문 화면 보기
             </Link>
+            <Link
+              className="link-button inline-link"
+              href={`/projects/${projectId}/style`}
+            >
+              스타일 페이지 보기
+            </Link>
           </div>
         </div>
         <div className="hero-panel">

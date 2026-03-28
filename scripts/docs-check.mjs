@@ -8,7 +8,9 @@ const requiredPaths = [
   'docs/phases/phase-0.md',
   'docs/phases/phase-1.md',
   'docs/phases/phase-2.md',
+  'docs/phases/phase-3.md',
   'docs/design/category-address-project-floorplan.md',
+  'docs/design/category-style-generation.md',
   'docs/design/category-process-plan.md',
   'docs/design/category-visual-question.md',
   'docs/design/category-expert-lead.md',
@@ -17,11 +19,13 @@ const requiredPaths = [
   'docs/adr/ADR-0003-process-plan-catalog-snapshot.md',
   'docs/adr/ADR-0004-visual-question-sync-mock-analysis.md',
   'docs/adr/ADR-0005-expert-recommendation-project-signals.md',
+  'docs/adr/ADR-0006-style-image-mock-provider.md',
   'docs/issues/2026-03-28-local-env-and-secret-state.md',
   'docs/test-cases/phase-1-vertical-slice.md',
   'docs/test-cases/phase-2-process-plan.md',
   'docs/test-cases/phase-2-visual-question.md',
   'docs/test-cases/phase-2-expert-lead.md',
+  'docs/test-cases/phase-3-style.md',
   '.env.example',
 ];
 
