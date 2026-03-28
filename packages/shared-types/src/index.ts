@@ -15,6 +15,16 @@ export type LicenseStatus =
 export type ProcessPlanStatus = 'IN_PROGRESS' | 'COMPLETED';
 export type ProcessStepStatus = 'TODO' | 'IN_PROGRESS' | 'DONE';
 export type ProcessTaskGroup = 'PREPARE' | 'DECISION' | 'NEXT';
+export type VisualQuestionStatus = 'PROCESSING' | 'COMPLETED';
+export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+export type SpaceType =
+  | 'LIVING_ROOM'
+  | 'KITCHEN'
+  | 'BATHROOM'
+  | 'BEDROOM'
+  | 'ENTRANCE'
+  | 'BALCONY'
+  | 'OTHER';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -252,6 +262,64 @@ export interface ProcessTaskToggleResponse {
   completed: boolean;
   stepStatus: ProcessStepStatus;
   currentStepKey?: string;
+}
+
+export interface CreateVisualQuestionResponse {
+  questionId: string;
+  status: VisualQuestionStatus;
+}
+
+export interface VisualQuestionSummary {
+  id: string;
+  questionText: string;
+  processStepKey?: string;
+  spaceType: SpaceType;
+  status: VisualQuestionStatus;
+  riskLevel?: RiskLevel;
+  expertRequired: boolean;
+  observedText?: string;
+  createdAt: string;
+}
+
+export interface VisualQuestionListResponse {
+  questions: VisualQuestionSummary[];
+}
+
+export interface VisualQuestionImage {
+  id: string;
+  fileName: string;
+  contentType?: string;
+  storagePath: string;
+}
+
+export interface VisualAnswer {
+  riskLevel: RiskLevel;
+  observedText: string;
+  possibleCausesText: string;
+  nextChecksText: string;
+  proceedRecommendationText: string;
+  expertRequired: boolean;
+  confidenceScore: number;
+}
+
+export interface GuideLink {
+  title: string;
+  slug: string;
+  path: string;
+}
+
+export interface VisualQuestionDetailResponse {
+  question: {
+    id: string;
+    questionText: string;
+    processStepKey?: string;
+    spaceType: SpaceType;
+    status: VisualQuestionStatus;
+    createdAt: string;
+  };
+  answer: VisualAnswer;
+  images: VisualQuestionImage[];
+  relatedGuideLinks: GuideLink[];
 }
 
 export interface AttachPropertyRequest {

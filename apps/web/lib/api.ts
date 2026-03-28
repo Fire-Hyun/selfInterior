@@ -16,12 +16,16 @@ export async function apiRequest<T>(
   path: string,
   init?: RequestInit,
 ): Promise<ApiResponse<T>> {
+  const isFormData =
+    typeof FormData !== 'undefined' && init?.body instanceof FormData;
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init?.headers ?? {}),
-    },
+    headers: isFormData
+      ? { ...(init?.headers ?? {}) }
+      : {
+          'Content-Type': 'application/json',
+          ...(init?.headers ?? {}),
+        },
     cache: 'no-store',
   });
 

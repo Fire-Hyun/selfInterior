@@ -4,10 +4,10 @@
 
 ## 현재 상태
 
-- 현재 단계: Phase 0 완료, Phase 2.0 완료
-- 이번 범위: 주소 검색, 프로젝트 생성, 프로젝트-속성 연결, 도면 후보 저장과 선택, 프로젝트 홈 대시보드, 공정 플래너까지
+- 현재 단계: Phase 0 완료, Phase 2.1 구현 완료
+- 이번 범위: 주소 검색, 프로젝트 생성, 프로젝트-속성 연결, 도면 후보 저장과 선택, 프로젝트 홈 대시보드, 공정 플래너, 사진 질문까지
 - 원격 저장소: `https://github.com/Fire-Hyun/selfInterior.git`
-- 최근 커밋: `4cb1d12` `feat: add project home dashboard slice`
+- 최근 커밋: `d0e66f7` `feat: add process plan vertical slice`
 - 최근 push: 2026-03-28 `main` 브랜치 push 성공
 - 설계 기준 문서:
   - `interior_architecture_spec_ko.md`
@@ -17,9 +17,11 @@
   - `docs/phases/phase-2.md`
   - `docs/design/category-address-project-floorplan.md`
   - `docs/design/category-process-plan.md`
+  - `docs/design/category-visual-question.md`
   - `docs/adr/ADR-0001-monorepo-provider-slice.md`
   - `docs/adr/ADR-0002-project-home-read-model.md`
   - `docs/adr/ADR-0003-process-plan-catalog-snapshot.md`
+  - `docs/adr/ADR-0004-visual-question-sync-mock-analysis.md`
 
 ## 저장소 구조
 
@@ -104,6 +106,7 @@ docker compose up -d postgres redis
 6. 선택된 도면 후보를 프로젝트 상세에 반영
 7. 프로젝트 홈 카드로 다음 행동을 확인
 8. 공정 플랜 생성, 단계 상세 조회, 체크리스트 토글
+9. 사진 질문 등록, 구조화된 답변 저장, 최근 질문 카드 연동
 
 ## 차단 사항
 

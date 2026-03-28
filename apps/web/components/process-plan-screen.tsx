@@ -67,20 +67,23 @@ export function ProcessPlanScreen({ projectId }: { projectId: string }) {
     }
   }, [projectId]);
 
-  const loadStep = useCallback(async (stepKey: string) => {
-    try {
-      const response = await apiRequest<ProcessPlanStepDetailResponse>(
-        `/api/v1/projects/${projectId}/process-plan/steps/${stepKey}`,
-      );
-      setStepDetail(response.data ?? null);
-    } catch (caughtError) {
-      setError(
-        caughtError instanceof Error
-          ? caughtError.message
-          : '공정 단계 상세를 불러오지 못했습니다.',
-      );
-    }
-  }, [projectId]);
+  const loadStep = useCallback(
+    async (stepKey: string) => {
+      try {
+        const response = await apiRequest<ProcessPlanStepDetailResponse>(
+          `/api/v1/projects/${projectId}/process-plan/steps/${stepKey}`,
+        );
+        setStepDetail(response.data ?? null);
+      } catch (caughtError) {
+        setError(
+          caughtError instanceof Error
+            ? caughtError.message
+            : '공정 단계 상세를 불러오지 못했습니다.',
+        );
+      }
+    },
+    [projectId],
+  );
 
   useEffect(() => {
     void loadPlan();

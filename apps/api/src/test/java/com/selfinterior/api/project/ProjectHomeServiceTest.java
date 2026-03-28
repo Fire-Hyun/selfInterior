@@ -17,6 +17,8 @@ import com.selfinterior.api.process.ProjectProcessStepRepository;
 import com.selfinterior.api.property.PropertyEntity;
 import com.selfinterior.api.property.PropertyRepository;
 import com.selfinterior.api.property.PropertyType;
+import com.selfinterior.api.visualqa.VisualAnswerRepository;
+import com.selfinterior.api.visualqa.VisualQuestionRepository;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +38,8 @@ class ProjectHomeServiceTest {
   @Mock private NormalizedFloorPlanRepository normalizedFloorPlanRepository;
   @Mock private ProjectProcessPlanRepository projectProcessPlanRepository;
   @Mock private ProjectProcessStepRepository projectProcessStepRepository;
+  @Mock private VisualQuestionRepository visualQuestionRepository;
+  @Mock private VisualAnswerRepository visualAnswerRepository;
 
   @InjectMocks private ProjectHomeService projectHomeService;
 
@@ -92,6 +96,8 @@ class ProjectHomeServiceTest {
     when(normalizedFloorPlanRepository.findByFloorPlanCandidateId(candidateId))
         .thenReturn(Optional.of(normalized));
     when(projectProcessPlanRepository.findByProjectId(projectId)).thenReturn(Optional.empty());
+    when(visualQuestionRepository.findByProjectIdOrderByCreatedAtDesc(projectId))
+        .thenReturn(List.of());
 
     var response = projectHomeService.get(projectId.toString());
 
@@ -123,6 +129,8 @@ class ProjectHomeServiceTest {
     when(floorPlanCandidateRepository.findByProjectIdOrderByConfidenceScoreDesc(projectId))
         .thenReturn(List.of());
     when(projectProcessPlanRepository.findByProjectId(projectId)).thenReturn(Optional.empty());
+    when(visualQuestionRepository.findByProjectIdOrderByCreatedAtDesc(projectId))
+        .thenReturn(List.of());
 
     var response = projectHomeService.get(projectId.toString());
 

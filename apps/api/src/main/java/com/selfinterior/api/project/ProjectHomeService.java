@@ -18,6 +18,10 @@ import com.selfinterior.api.project.ProjectController.HomePlaceholderCardRespons
 import com.selfinterior.api.project.ProjectController.ProjectHomeResponse;
 import com.selfinterior.api.property.PropertyEntity;
 import com.selfinterior.api.property.PropertyRepository;
+import com.selfinterior.api.visualqa.VisualAnswerEntity;
+import com.selfinterior.api.visualqa.VisualAnswerRepository;
+import com.selfinterior.api.visualqa.VisualQuestionEntity;
+import com.selfinterior.api.visualqa.VisualQuestionRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +39,8 @@ public class ProjectHomeService {
   private final NormalizedFloorPlanRepository normalizedFloorPlanRepository;
   private final ProjectProcessPlanRepository projectProcessPlanRepository;
   private final ProjectProcessStepRepository projectProcessStepRepository;
+  private final VisualQuestionRepository visualQuestionRepository;
+  private final VisualAnswerRepository visualAnswerRepository;
 
   public ProjectHomeResponse get(String projectId) {
     ProjectEntity project = findProject(projectId);
@@ -53,6 +59,11 @@ public class ProjectHomeService {
     ProjectProcessPlanEntity processPlan =
         projectProcessPlanRepository.findByProjectId(project.getId()).orElse(null);
     ProjectProcessStepEntity currentProcessStep = loadCurrentProcessStep(processPlan);
+    VisualQuestionEntity latestQuestion = loadLatestQuestion(project.getId());
+    VisualAnswerEntity latestAnswer =
+        latestQuestion == null
+            ? null
+            : visualAnswerRepository.findByQuestionId(latestQuestion.getId()).orElse(null);
 
     return new ProjectHomeResponse(
         ProjectMapper.toHomeProject(project),
@@ -66,12 +77,7 @@ public class ProjectHomeService {
             manualCheckItems,
             processPlan,
             currentProcessStep),
-        buildPlaceholderCard(
-            "최근 질문",
-            "PENDING_INTEGRATION",
-            "VisualQuestion 도메인이 연결되면 현장 사진 질문과 답변 상태가 여기에 표시됩니다.",
-            "질문 모듈 준비 중",
-            "/projects/" + project.getId() + "/home#recent-questions"),
+        buildRecentQuestionCard(project.getId(), latestQuestion, latestAnswer),
         buildPlaceholderCard(
             "추천 전문가",
             "PENDING_INTEGRATION",
@@ -189,6 +195,33 @@ public class ProjectHomeService {
     return projectProcessStepRepository
         .findByProcessPlanIdAndStepKey(processPlan.getId(), processPlan.getCurrentStepKey())
         .orElse(null);
+  }
+
+  private VisualQuestionEntity loadLatestQuestion(UUID projectId) {
+    List<VisualQuestionEntity> questions =
+        visualQuestionRepository.findByProjectIdOrderByCreatedAtDesc(projectId);
+    return questions.isEmpty() ? null : questions.get(0);
+  }
+
+  private HomePlaceholderCardResponse buildRecentQuestionCard(
+      UUID projectId, VisualQuestionEntity latestQuestion, VisualAnswerEntity latestAnswer) {
+    if (latestQuestion == null) {
+      return buildPlaceholderCard(
+          "최근 질문",
+          "PENDING_INTEGRATION",
+          "VisualQuestion 도메인이 연결되면 현장 사진 질문과 답변 상태가 여기에 표시됩니다.",
+          "질문 모듈 준비 중",
+          "/projects/" + projectId + "/home#recent-questions");
+    }
+
+    return new HomePlaceholderCardResponse(
+        "최근 질문",
+        latestAnswer == null
+            ? latestQuestion.getStatus().name()
+            : latestAnswer.getRiskLevel().name(),
+        latestQuestion.getQuestionText(),
+        latestAnswer != null && latestAnswer.isExpertRequired() ? "답변과 위험도 보기" : "질문 상세 보기",
+        "/projects/" + projectId + "/qa");
   }
 
   private HomePlaceholderCardResponse buildPlaceholderCard(
