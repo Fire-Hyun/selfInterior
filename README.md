@@ -7,6 +7,7 @@
 - 현재 단계: Phase 0 완료, Phase 1.1 진행 중
 - 이번 범위: 주소 검색, 프로젝트 생성, 프로젝트-속성 연결, 도면 후보 저장과 선택, 프로젝트 상세 요약까지
 - 원격 저장소: `https://github.com/Fire-Hyun/selfInterior.git`
+- 최근 push: `main` 브랜치로 초기 push 완료
 - 설계 기준 문서:
   - `interior_architecture_spec_ko.md`
   - `codex_prompts_ko.txt`
