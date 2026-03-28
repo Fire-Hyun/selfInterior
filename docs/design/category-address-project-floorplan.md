@@ -66,6 +66,7 @@
 - 프로젝트 생성 폼
 - 도면 후보 요약 화면
 - 프로젝트 상세 상태 패널
+- 프로젝트 홈 대시보드
 
 ### API
 
@@ -74,6 +75,7 @@
 - domain service: provider 전략 및 fallback
 - adapter: 외부 provider mock/real 구현
 - persistence: JPA entity, repository, Flyway
+- read model: 프로젝트 홈 카드 조합 응답
 
 ## provider 전략
 
@@ -123,3 +125,4 @@
 - provider provenance 필드 저장
 - 도면 후보 수동 선택 시 기존 선택 해제
 - 프로젝트 상세 응답에 property/selected plan 요약 포함
+- 프로젝트 홈 응답에 우리 집 요약/다음 액션/placeholder 카드 포함

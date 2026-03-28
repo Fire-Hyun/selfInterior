@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ProjectController {
   private final ProjectService projectService;
+  private final ProjectHomeService projectHomeService;
 
   @PostMapping
   public ApiResponse<CreateProjectResponse> create(
@@ -36,6 +37,11 @@ public class ProjectController {
   @GetMapping("/{projectId}")
   public ApiResponse<ProjectDetailResponse> get(@PathVariable String projectId) {
     return ApiResponse.ok(projectService.get(projectId));
+  }
+
+  @GetMapping("/{projectId}/home")
+  public ApiResponse<ProjectHomeResponse> home(@PathVariable String projectId) {
+    return ApiResponse.ok(projectHomeService.get(projectId));
   }
 
   @PatchMapping("/{projectId}")
@@ -93,6 +99,53 @@ public class ProjectController {
       String sourceType,
       String licenseStatus,
       String source) {}
+
+  public record ProjectHomeResponse(
+      HomeProjectSummaryResponse project,
+      HomePropertyCardResponse property,
+      HomeFloorPlanCardResponse floorPlan,
+      List<HomeActionResponse> nextActions,
+      HomePlaceholderCardResponse recentQuestions,
+      HomePlaceholderCardResponse recommendedExperts) {}
+
+  public record HomeProjectSummaryResponse(
+      String id,
+      String title,
+      String projectType,
+      String livingStatus,
+      String currentProcessStep,
+      boolean onboardingCompleted) {}
+
+  public record HomePropertyCardResponse(
+      String apartmentName,
+      String roadAddress,
+      String dongNo,
+      String hoNo,
+      Integer completionYear,
+      Integer householdCount,
+      Double exclusiveAreaM2) {}
+
+  public record HomeFloorPlanCardResponse(
+      String candidateId,
+      String layoutLabel,
+      String confidenceGrade,
+      double confidenceScore,
+      String sourceType,
+      String source,
+      String licenseStatus,
+      int candidateCount,
+      String structureSummary,
+      List<String> manualCheckItems) {}
+
+  public record HomeActionResponse(
+      String key, String title, String description, String status, String path) {}
+
+  public record HomePlaceholderCardResponse(
+      String title,
+      String status,
+      String description,
+      String primaryActionLabel,
+      String primaryActionPath) {}
 
   public record ProjectListResponse(List<ProjectSummaryResponse> projects) {}
 }

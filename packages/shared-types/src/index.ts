@@ -141,6 +141,63 @@ export interface ProjectDetail extends ProjectSummary {
   floorPlanCandidateCount: number;
 }
 
+export interface ProjectHomeSummary {
+  id: string;
+  title: string;
+  projectType: ProjectType;
+  livingStatus: LivingStatus;
+  currentProcessStep?: string;
+  onboardingCompleted: boolean;
+}
+
+export interface ProjectHomePropertyCard {
+  apartmentName: string;
+  roadAddress: string;
+  dongNo?: string;
+  hoNo?: string;
+  completionYear?: number;
+  householdCount?: number;
+  exclusiveAreaM2?: number;
+}
+
+export interface ProjectHomeFloorPlanCard {
+  candidateId: string;
+  layoutLabel: string;
+  confidenceGrade: ConfidenceGrade;
+  confidenceScore: number;
+  sourceType: FloorPlanSourceType;
+  source: string;
+  licenseStatus: LicenseStatus;
+  candidateCount: number;
+  structureSummary: string;
+  manualCheckItems: string[];
+}
+
+export interface ProjectHomeAction {
+  key: string;
+  title: string;
+  description: string;
+  status: 'DONE' | 'READY' | 'BLOCKED' | 'UPCOMING';
+  path: string;
+}
+
+export interface ProjectHomePlaceholderCard {
+  title: string;
+  status: string;
+  description: string;
+  primaryActionLabel: string;
+  primaryActionPath: string;
+}
+
+export interface ProjectHomeResponse {
+  project: ProjectHomeSummary;
+  property?: ProjectHomePropertyCard;
+  floorPlan?: ProjectHomeFloorPlanCard;
+  nextActions: ProjectHomeAction[];
+  recentQuestions: ProjectHomePlaceholderCard;
+  recommendedExperts: ProjectHomePlaceholderCard;
+}
+
 export interface AttachPropertyRequest {
   roadAddress: string;
   jibunAddress?: string;

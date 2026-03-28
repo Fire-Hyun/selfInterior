@@ -9,6 +9,7 @@ const requiredPaths = [
   'docs/phases/phase-1.md',
   'docs/design/category-address-project-floorplan.md',
   'docs/adr/ADR-0001-monorepo-provider-slice.md',
+  'docs/adr/ADR-0002-project-home-read-model.md',
   'docs/issues/2026-03-28-local-env-and-secret-state.md',
   'docs/test-cases/phase-1-vertical-slice.md',
   '.env.example',

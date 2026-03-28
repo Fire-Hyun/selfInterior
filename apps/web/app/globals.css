@@ -147,6 +147,12 @@ select {
   gap: 12px;
 }
 
+.stack,
+.task-list {
+  display: grid;
+  gap: 12px;
+}
+
 .candidate-card,
 .project-card,
 .plan-card {
@@ -237,6 +243,23 @@ select {
   cursor: not-allowed;
 }
 
+.link-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border-radius: 999px;
+  padding: 0 16px;
+  background: rgba(49, 87, 66, 0.1);
+  color: var(--secondary);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.inline-link {
+  margin-top: 12px;
+}
+
 .summary-grid {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -276,6 +299,30 @@ select {
 .plan-card ul {
   margin: 12px 0 0;
   padding-left: 18px;
+}
+
+.task-card,
+.placeholder-card {
+  border-radius: 24px;
+  border: 1px solid rgba(49, 87, 66, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  padding: 18px;
+}
+
+.tone-done {
+  border-color: rgba(49, 87, 66, 0.25);
+}
+
+.tone-ready {
+  border-color: rgba(214, 98, 47, 0.45);
+}
+
+.tone-upcoming {
+  border-color: rgba(108, 93, 46, 0.24);
+}
+
+.tone-blocked {
+  border-color: rgba(120, 120, 120, 0.18);
 }
 
 @media (max-width: 900px) {

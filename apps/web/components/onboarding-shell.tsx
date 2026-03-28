@@ -4,7 +4,6 @@ import type {
   AddressSearchCandidate,
   AddressSearchRequest,
   AddressSearchResponse,
-  ApiResponse,
   AttachPropertyRequest,
   CreateProjectRequest,
   CreateProjectResponse,
@@ -18,30 +17,9 @@ import type {
   PropertyResolveRequest,
   PropertyResolveResponse,
 } from '@selfinterior/shared-types';
+import Link from 'next/link';
 import { startTransition, useEffect, useMemo, useState } from 'react';
-
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080';
-
-async function apiRequest<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<ApiResponse<T>> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init?.headers ?? {}),
-    },
-    cache: 'no-store',
-  });
-
-  if (!response.ok) {
-    throw new Error(`API 요청 실패: ${response.status}`);
-  }
-
-  return (await response.json()) as ApiResponse<T>;
-}
+import { apiRequest } from '@/lib/api';
 
 export function OnboardingShell() {
   const [query, setQuery] = useState('잠실 리센츠 201동 1203호');
@@ -321,11 +299,12 @@ export function OnboardingShell() {
     <main className="shell">
       <section className="hero-card">
         <div className="hero-copy">
-          <p className="eyebrow">Phase 1.1 Vertical Slice</p>
+          <p className="eyebrow">Phase 1.2 Vertical Slice</p>
           <h1>주소부터 선택된 도면 후보까지 한 번에 이어지는 흐름</h1>
           <p className="lede">
             주소 검색, 집 정보 resolve, 프로젝트 생성, provider 기반 도면 후보
-            저장과 수동 선택까지 한 화면에서 확인할 수 있게 구성했습니다.
+            저장과 수동 선택, 프로젝트 홈 진입까지 한 화면에서 확인할 수 있게
+            구성했습니다.
           </p>
         </div>
         <div className="hero-panel">
@@ -605,13 +584,27 @@ export function OnboardingShell() {
                   propertyAttached:{' '}
                   {project.propertyAttached ? 'true' : 'false'}
                 </small>
+                <Link
+                  className="link-button inline-link"
+                  href={`/projects/${project.id}/home`}
+                >
+                  프로젝트 홈 보기
+                </Link>
               </div>
             ))
           )}
           {createdProject ? (
-            <p className="status">
-              최근 생성 프로젝트: {createdProject.title} ({createdProject.id})
-            </p>
+            <div className="stack">
+              <p className="status">
+                최근 생성 프로젝트: {createdProject.title} ({createdProject.id})
+              </p>
+              <Link
+                className="link-button inline-link"
+                href={`/projects/${createdProject.id}/home`}
+              >
+                생성된 프로젝트 홈으로 이동
+              </Link>
+            </div>
           ) : null}
         </div>
       </section>

@@ -27,3 +27,10 @@
 - provider 전략이 실행된다.
 - 후보가 저장된다.
 - 각 후보에 `source`, `license_status`, `confidence`, `raw_payload_ref`, `normalized_plan_ref`가 기록된다.
+
+## 프로젝트 홈
+
+- 프로젝트 홈 응답이 우리 집 요약 카드와 선택된 도면 요약 카드를 반환한다.
+- 도면 후보는 선택 여부와 수동 확인 항목 상태를 반영해 다음 액션으로 계산된다.
+- `VisualQuestion`, `ExpertLead`는 placeholder 카드로 노출된다.
+- web에서 `/projects/{projectId}/home`으로 진입할 수 있다.

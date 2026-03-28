@@ -4,8 +4,8 @@
 
 ## 현재 상태
 
-- 현재 단계: Phase 0 완료, Phase 1.1 진행 중
-- 이번 범위: 주소 검색, 프로젝트 생성, 프로젝트-속성 연결, 도면 후보 저장과 선택, 프로젝트 상세 요약까지
+- 현재 단계: Phase 0 완료, Phase 1.2 완료
+- 이번 범위: 주소 검색, 프로젝트 생성, 프로젝트-속성 연결, 도면 후보 저장과 선택, 프로젝트 홈 대시보드까지
 - 원격 저장소: `https://github.com/Fire-Hyun/selfInterior.git`
 - 최근 push: `main` 브랜치로 초기 push 완료
 - 설계 기준 문서:
@@ -15,6 +15,7 @@
   - `docs/phases/phase-1.md`
   - `docs/design/category-address-project-floorplan.md`
   - `docs/adr/ADR-0001-monorepo-provider-slice.md`
+  - `docs/adr/ADR-0002-project-home-read-model.md`
 
 ## 저장소 구조
 
@@ -97,6 +98,7 @@ docker compose up -d postgres redis
 4. 프로젝트에 집 정보 연결
 5. provider 기반 도면 후보 저장 및 조회
 6. 선택된 도면 후보를 프로젝트 상세에 반영
+7. 프로젝트 홈 카드로 다음 행동을 확인
 
 ## 차단 사항
 
