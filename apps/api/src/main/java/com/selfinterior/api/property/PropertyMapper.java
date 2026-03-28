@@ -49,14 +49,14 @@ public final class PropertyMapper {
 
   private static String formatAreaLabel(Double area) {
     if (area == null) {
-      return "Area check required";
+      return "\uBA74\uC801 \uD655\uC778 \uD544\uC694";
     }
 
     if (Math.floor(area) == area) {
-      return "Area " + area.intValue() + "m2";
+      return "\uC804\uC6A9 " + area.intValue() + "\u33A1";
     }
 
-    return "Area " + area + "m2";
+    return "\uC804\uC6A9 " + area + "\u33A1";
   }
 
   public static List<ExternalPropertyRefEntity> toEntities(

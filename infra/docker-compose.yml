@@ -23,7 +23,7 @@ services:
     image: gradle:8.14.3-jdk21
     container_name: selfinterior-api
     working_dir: /workspace/apps/api
-    command: bash -lc "chmod +x gradlew && ./gradlew bootRun --no-daemon"
+    command: bash -lc "chmod +x gradlew && ./gradlew --project-cache-dir /tmp/gradle-project-cache bootRun --no-daemon"
     environment:
       DB_URL: jdbc:postgresql://postgres:5432/selfinterior
       DB_USERNAME: selfinterior

@@ -50,6 +50,49 @@ function Test-LocalPort {
   return $null -ne $connection
 }
 
+function Get-ListeningProcess {
+  param([int]$Port)
+
+  $connection = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue |
+    Select-Object -First 1
+
+  if (-not $connection) {
+    return $null
+  }
+
+  return Get-Process -Id $connection.OwningProcess -ErrorAction SilentlyContinue
+}
+
+function Stop-StaleWorkspaceApi {
+  param([int]$Port)
+
+  $process = Get-ListeningProcess -Port $Port
+  if (-not $process) {
+    return
+  }
+
+  $processPath = ''
+  try {
+    $processPath = $process.Path
+  } catch {
+    $processPath = ''
+  }
+
+  $isWorkspaceJava =
+    $process.ProcessName -eq 'java' -and
+    $processPath -and
+    $processPath.StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)
+
+  if ($isWorkspaceJava) {
+    Stop-Process -Id $process.Id -Force
+    Write-Host "기존 로컬 API 프로세스를 정리했습니다. pid=$($process.Id)" -ForegroundColor Yellow
+    Start-Sleep -Seconds 2
+    return
+  }
+
+  throw "포트 $Port 를 다른 프로세스가 사용 중입니다. docker 모드로 실행하려면 해당 프로세스를 먼저 정리해야 합니다. process=$($process.ProcessName)"
+}
+
 function Write-LauncherScript {
   param(
     [string]$Path,
@@ -128,8 +171,9 @@ if ($useLocalApi) {
     Write-Host 'API(8080)가 이미 실행 중입니다. 새 창을 띄우지 않습니다.' -ForegroundColor Yellow
   }
 } else {
+  Stop-StaleWorkspaceApi -Port 8080
   Write-Host 'Docker 기반으로 postgres, redis, api를 함께 올립니다...' -ForegroundColor Cyan
-  docker compose -f (Join-Path $root 'infra\docker-compose.yml') up -d postgres redis api
+  docker compose -f (Join-Path $root 'infra\docker-compose.yml') up -d --force-recreate postgres redis api
 }
 
 if (-not (Test-LocalPort -Port 3000)) {

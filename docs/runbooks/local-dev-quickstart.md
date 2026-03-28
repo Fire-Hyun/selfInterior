@@ -17,6 +17,8 @@ npm run dev:up
 - `postgres`, `redis`, `api`는 Docker Compose로 실행한다.
 - web은 별도 PowerShell 창에서 `npm run dev`로 실행한다.
 - 로컬 JDK가 없어도 기본 경로는 동작한다.
+- 예전 로컬 `java` API가 8080을 잡고 있으면 같은 workspace 프로세스는 자동으로 정리한다.
+- Docker API와 검증 명령은 Gradle project cache를 분리해서 서로 락 충돌이 나지 않게 한다.
 
 ## 상태 확인
 

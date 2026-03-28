@@ -6,6 +6,7 @@ const root = process.cwd();
 const apiDir = path.join(root, 'apps', 'api');
 const gradleArgs = process.argv.slice(2);
 const preferLocalJdk = process.env.SELFINTERIOR_USE_LOCAL_JDK === '1';
+const dockerGradleCommand = `chmod +x gradlew && ./gradlew --project-cache-dir /tmp/gradle-project-cache ${gradleArgs.join(' ')}`;
 
 if (gradleArgs.length === 0) {
   console.error('실행할 Gradle task를 전달해야 합니다.');
@@ -42,7 +43,7 @@ const result =
           'gradle:8.14.3-jdk21',
           'bash',
           '-lc',
-          `chmod +x gradlew && ./gradlew ${gradleArgs.join(' ')}`,
+          dockerGradleCommand,
         ],
         {
           cwd: apiDir,

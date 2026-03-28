@@ -21,7 +21,7 @@ import { startTransition, useEffect, useMemo, useState } from 'react';
 import { apiRequest } from '@/lib/api';
 
 export function OnboardingShell() {
-  const [query, setQuery] = useState('recents');
+  const [query, setQuery] = useState('리센츠');
   const [searchResults, setSearchResults] = useState<AddressSearchCandidate[]>(
     [],
   );
@@ -34,7 +34,7 @@ export function OnboardingShell() {
   const [externalRefs, setExternalRefs] = useState<
     PropertyResolveResponse['externalRefs']
   >([]);
-  const [projectTitle, setProjectTitle] = useState('My interior project');
+  const [projectTitle, setProjectTitle] = useState('우리 집 인테리어');
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [createdProject, setCreatedProject] = useState<ProjectSummary | null>(
     null,
@@ -85,7 +85,7 @@ export function OnboardingShell() {
   }
 
   async function searchAddress() {
-    setBusyStage('Searching apartment complexes...');
+    setBusyStage('아파트 단지를 검색하고 있습니다...');
     setError('');
     setSearchResults([]);
     setSelectedCandidate(null);
@@ -110,7 +110,7 @@ export function OnboardingShell() {
       setError(
         caughtError instanceof Error
           ? caughtError.message
-          : 'Complex search failed.',
+          : '단지 검색에 실패했습니다.',
       );
     } finally {
       setBusyStage('');
@@ -118,7 +118,7 @@ export function OnboardingShell() {
   }
 
   async function chooseCandidate(candidate: AddressSearchCandidate) {
-    setBusyStage('Loading area options for the selected complex...');
+    setBusyStage('선택한 단지의 평형 정보를 불러오고 있습니다...');
     setError('');
     setSelectedCandidate(candidate);
     setPropertySummary(null);
@@ -143,13 +143,13 @@ export function OnboardingShell() {
       setExternalRefs(response.data?.externalRefs ?? []);
       setSelectedAreaLabel(summary?.areaOptions[0]?.label ?? '');
       if (summary?.apartmentName) {
-        setProjectTitle(`${summary.apartmentName} interior`);
+        setProjectTitle(`${summary.apartmentName} 인테리어`);
       }
     } catch (caughtError) {
       setError(
         caughtError instanceof Error
           ? caughtError.message
-          : 'Area options could not be loaded.',
+          : '평형 정보를 불러오지 못했습니다.',
       );
     } finally {
       setBusyStage('');
@@ -161,7 +161,7 @@ export function OnboardingShell() {
       return;
     }
 
-    setBusyStage('Creating project and loading floor plan candidates...');
+    setBusyStage('프로젝트와 도면 후보를 준비하고 있습니다...');
     setError('');
 
     try {
@@ -182,7 +182,7 @@ export function OnboardingShell() {
 
       const project = projectResponse.data?.project;
       if (!project) {
-        throw new Error('Project create response is empty.');
+        throw new Error('프로젝트 생성 응답이 비어 있습니다.');
       }
 
       setCreatedProject(project);
@@ -220,7 +220,7 @@ export function OnboardingShell() {
       setError(
         caughtError instanceof Error
           ? caughtError.message
-          : 'Project flow failed.',
+          : '프로젝트 생성 흐름에 실패했습니다.',
       );
     } finally {
       setBusyStage('');
@@ -232,7 +232,7 @@ export function OnboardingShell() {
       return;
     }
 
-    setBusyStage('Saving selected floor plan...');
+    setBusyStage('선택한 도면 후보를 저장하고 있습니다...');
     setError('');
 
     try {
@@ -256,7 +256,7 @@ export function OnboardingShell() {
       setError(
         caughtError instanceof Error
           ? caughtError.message
-          : 'Floor plan selection failed.',
+          : '도면 후보 선택에 실패했습니다.',
       );
     } finally {
       setBusyStage('');
@@ -268,27 +268,27 @@ export function OnboardingShell() {
       <section className="hero-card">
         <div className="hero-copy">
           <p className="eyebrow">Phase 1.3 Vertical Slice</p>
-          <h1>Search by complex, pick an area, then keep moving.</h1>
+          <h1>단지명 검색부터 평형 선택, 도면 후보 확인까지 이어집니다.</h1>
           <p className="lede">
-            The onboarding flow no longer asks for exact dong and ho. Pick the
-            apartment complex first, select one of the available area options,
-            and continue into project creation and floor plan review.
+            정확한 동과 호수를 입력하지 않고도 단지명만으로 시작할 수 있습니다.
+            먼저 아파트 단지를 고르고, 그다음 평형을 선택하면 프로젝트 생성과
+            도면 후보 확인으로 자연스럽게 이어집니다.
           </p>
         </div>
         <div className="hero-panel">
           <label className="field">
-            <span>Apartment complex or road name</span>
+            <span>아파트 단지명 또는 도로명</span>
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Examples: recents, helio city, mapo raemian"
+              placeholder="예: 리센츠, 헬리오시티, 마포 래미안"
             />
           </label>
           <button
             className="primary-button"
             onClick={() => void searchAddress()}
           >
-            Search complexes
+            단지 검색
           </button>
           {busyStage ? <p className="status">{busyStage}</p> : null}
           {error ? <p className="error">{error}</p> : null}
@@ -298,13 +298,13 @@ export function OnboardingShell() {
       <section className="grid two-up">
         <article className="panel">
           <div className="section-head">
-            <p className="eyebrow">1. Complex Search</p>
-            <h2>Choose a complex</h2>
+            <p className="eyebrow">1. 단지 선택</p>
+            <h2>검색 결과에서 우리 집 단지를 고르세요.</h2>
           </div>
           <div className="candidate-list">
             {searchResults.length === 0 ? (
               <p className="empty">
-                Search for a complex name to see selectable candidates here.
+                단지명을 검색하면 여기에서 선택 가능한 후보가 보입니다.
               </p>
             ) : (
               searchResults.map((candidate) => (
@@ -320,12 +320,11 @@ export function OnboardingShell() {
                   <strong>{candidate.displayName}</strong>
                   <span>{candidate.roadAddress}</span>
                   <small>
-                    Built {candidate.complexHint.completionYear} -{' '}
-                    {candidate.complexHint.householdCount.toLocaleString()}{' '}
-                    homes
+                    준공 {candidate.complexHint.completionYear}년 -{' '}
+                    {candidate.complexHint.householdCount.toLocaleString()}세대
                   </small>
                   <small>
-                    Area hints: {candidate.complexHint.areaHints.join(', ')} m2
+                    평형 후보: {candidate.complexHint.areaHints.join(', ')}㎡
                   </small>
                 </button>
               ))
@@ -335,22 +334,22 @@ export function OnboardingShell() {
 
         <article className="panel">
           <div className="section-head">
-            <p className="eyebrow">2. Area Selection</p>
-            <h2>Pick the matching area</h2>
+            <p className="eyebrow">2. 평형 선택</p>
+            <h2>선택한 단지에 맞는 평형을 고르세요.</h2>
           </div>
           {propertySummary ? (
             <div className="summary-card">
               <h3>{propertySummary.apartmentName}</h3>
               <p>{propertySummary.roadAddress}</p>
               <div className="summary-grid">
-                <span>Households</span>
+                <span>세대 수</span>
                 <strong>
-                  {propertySummary.householdCount.toLocaleString()}
+                  {propertySummary.householdCount.toLocaleString()}세대
                 </strong>
-                <span>Completion year</span>
-                <strong>{propertySummary.completionYear}</strong>
-                <span>Default mode</span>
-                <strong>Complex first, no unit number</strong>
+                <span>준공 연도</span>
+                <strong>{propertySummary.completionYear}년</strong>
+                <span>진행 방식</span>
+                <strong>동/호 없이 평형 먼저 선택</strong>
               </div>
               <div className="candidate-list">
                 {propertySummary.areaOptions.map((option) => (
@@ -365,15 +364,15 @@ export function OnboardingShell() {
                   >
                     <strong>{option.label}</strong>
                     <span>
-                      Rooms {option.roomCount ?? '-'} - Baths{' '}
-                      {option.bathroomCount ?? '-'}
+                      방 {option.roomCount ?? '-'}개 - 욕실{' '}
+                      {option.bathroomCount ?? '-'}개
                     </span>
                   </button>
                 ))}
               </div>
 
               <label className="field">
-                <span>Project title</span>
+                <span>프로젝트 제목</span>
                 <input
                   value={projectTitle}
                   onChange={(event) => setProjectTitle(event.target.value)}
@@ -384,12 +383,12 @@ export function OnboardingShell() {
                 onClick={() => void createProjectFlow()}
                 disabled={!canCreateProject}
               >
-                Create project with this area
+                이 평형으로 프로젝트 만들기
               </button>
             </div>
           ) : (
             <p className="empty">
-              Choose a complex and the area buttons will appear here.
+              단지를 선택하면 여기에서 평형 버튼이 나타납니다.
             </p>
           )}
         </article>
@@ -398,18 +397,18 @@ export function OnboardingShell() {
       <section className="grid two-up">
         <article className="panel">
           <div className="section-head">
-            <p className="eyebrow">3. Project Snapshot</p>
-            <h2>Current project state</h2>
+            <p className="eyebrow">3. 프로젝트 상태</p>
+            <h2>생성된 프로젝트의 현재 상태를 확인하세요.</h2>
           </div>
           {projectDetail ? (
             <div className="summary-card">
               <h3>{projectDetail.title}</h3>
               <div className="summary-grid">
-                <span>Project type</span>
+                <span>프로젝트 유형</span>
                 <strong>{projectDetail.projectType}</strong>
-                <span>Living status</span>
+                <span>거주 상태</span>
                 <strong>{projectDetail.livingStatus}</strong>
-                <span>Floor plan candidates</span>
+                <span>도면 후보 수</span>
                 <strong>{projectDetail.floorPlanCandidateCount}</strong>
               </div>
 
@@ -417,14 +416,14 @@ export function OnboardingShell() {
                 <>
                   <p className="eyebrow">Property</p>
                   <div className="summary-grid">
-                    <span>Complex</span>
+                    <span>단지명</span>
                     <strong>{projectDetail.property.apartmentName}</strong>
-                    <span>Address</span>
+                    <span>주소</span>
                     <strong>{projectDetail.property.roadAddress}</strong>
-                    <span>Selected area</span>
+                    <span>선택 평형</span>
                     <strong>
                       {projectDetail.property.exclusiveAreaM2
-                        ? `${projectDetail.property.exclusiveAreaM2} m2`
+                        ? `${projectDetail.property.exclusiveAreaM2}㎡`
                         : '-'}
                     </strong>
                   </div>
@@ -435,37 +434,37 @@ export function OnboardingShell() {
                 <>
                   <p className="eyebrow">Selected Floor Plan</p>
                   <div className="summary-grid">
-                    <span>Layout</span>
+                    <span>레이아웃</span>
                     <strong>
                       {projectDetail.selectedFloorPlan.layoutLabel}
                     </strong>
-                    <span>Confidence</span>
+                    <span>신뢰도</span>
                     <strong>
                       {projectDetail.selectedFloorPlan.confidenceGrade} -{' '}
                       {projectDetail.selectedFloorPlan.confidenceScore.toFixed(
                         1,
                       )}
                     </strong>
-                    <span>Source</span>
+                    <span>출처</span>
                     <strong>{projectDetail.selectedFloorPlan.source}</strong>
                   </div>
                 </>
               ) : (
-                <p className="empty">No floor plan has been selected yet.</p>
+                <p className="empty">선택된 도면 후보가 아직 없습니다.</p>
               )}
             </div>
           ) : (
             <p className="empty">
-              Project details will appear here after the first area-based
-              project is created.
+              프로젝트를 만들면 여기에서 선택한 평형과 연결 상태를 확인할 수
+              있습니다.
             </p>
           )}
         </article>
 
         <article className="panel">
           <div className="section-head">
-            <p className="eyebrow">4. Floor Plan Candidates</p>
-            <h2>Provider-based floor plan results</h2>
+            <p className="eyebrow">4. 도면 후보</p>
+            <h2>provider 기반 도면 후보를 비교해 보세요.</h2>
           </div>
           {floorPlans?.candidates?.length ? (
             <div className="candidate-list">
@@ -501,15 +500,15 @@ export function OnboardingShell() {
                     }
                   >
                     {floorPlans.selectedPlanId === candidate.id
-                      ? 'Current selection'
-                      : 'Select this plan'}
+                      ? '현재 선택된 도면'
+                      : '이 도면 선택'}
                   </button>
                 </div>
               ))}
             </div>
           ) : (
             <p className="empty">
-              Floor plan candidates will appear after project creation.
+              프로젝트를 만들면 도면 후보가 여기에서 보입니다.
             </p>
           )}
         </article>
@@ -518,11 +517,11 @@ export function OnboardingShell() {
       <section className="panel">
         <div className="section-head">
           <p className="eyebrow">Repository Snapshot</p>
-          <h2>Created projects</h2>
+          <h2>현재 생성된 프로젝트</h2>
         </div>
         <div className="project-list">
           {projects.length === 0 ? (
-            <p className="empty">No projects have been created yet.</p>
+            <p className="empty">아직 생성된 프로젝트가 없습니다.</p>
           ) : (
             projects.map((project) => (
               <div className="project-card" key={project.id}>
@@ -538,7 +537,7 @@ export function OnboardingShell() {
                   className="link-button inline-link"
                   href={`/projects/${project.id}/home`}
                 >
-                  Open project home
+                  프로젝트 홈 보기
                 </Link>
               </div>
             ))
@@ -546,13 +545,13 @@ export function OnboardingShell() {
           {createdProject ? (
             <div className="stack">
               <p className="status">
-                Latest project: {createdProject.title} ({createdProject.id})
+                최근 생성 프로젝트: {createdProject.title} ({createdProject.id})
               </p>
               <Link
                 className="link-button inline-link"
                 href={`/projects/${createdProject.id}/home`}
               >
-                Go to latest project
+                최근 프로젝트로 이동
               </Link>
             </div>
           ) : null}

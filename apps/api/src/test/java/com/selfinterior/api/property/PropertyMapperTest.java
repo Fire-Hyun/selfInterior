@@ -26,7 +26,7 @@ class PropertyMapperTest {
     var response = PropertyMapper.toResolveResponse(resolution);
 
     assertThat(response.propertySummary().areaOptions()).hasSize(2);
-    assertThat(response.propertySummary().areaOptions().get(0).label()).isEqualTo("Area 59.97m2");
+    assertThat(response.propertySummary().areaOptions().get(0).label()).isEqualTo("전용 59.97㎡");
     assertThat(response.propertySummary().areaOptions().get(1).exclusiveAreaM2()).isEqualTo(84.99);
     assertThat(response.propertySummary().areaOptions().get(1).roomCount()).isEqualTo(3);
     assertThat(response.propertySummary().areaOptions().get(1).bathroomCount()).isEqualTo(2);
