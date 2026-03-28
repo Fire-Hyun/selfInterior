@@ -1,0 +1,311 @@
+
+# Codex 요청용 스크립트 모음
+작성 기준일: 2026-03-26
+
+이 파일은 Codex에 순차적으로 붙여 넣기 위한 프롬프트 모음이다.
+기본 가정:
+- monorepo
+- Next.js App Router + TypeScript + Tailwind
+- Spring Boot + PostgreSQL + Redis + S3
+- 모듈형 모놀리스
+- 주소-first, 도면-fallback 설계
+
+==================================================
+[MASTER PROMPT]
+==================================================
+
+너는 시니어 풀스택 아키텍트이자 구현자다.
+내가 만들려는 서비스는 “반셀프 인테리어 웹 서비스”다.
+
+핵심 기능:
+1. 사용자가 아파트명/주소/동·호를 입력하면 집 정보를 자동 식별
+2. 가능한 범위에서 도면을 자동으로 찾거나, 못 찾으면 근사 평면을 생성
+3. 그 집 기준으로 스타일 예시 이미지 생성
+4. 공정 단계별 체크리스트/가이드/주의사항 제공
+5. 현장 사진 질문답변 제공
+6. 필요한 시점에 공정별 전문가 연결
+
+중요한 비즈니스 원칙:
+- 웹 우선, 앱은 나중
+- 주소-first, 도면 업로드는 fallback
+- 도면이 없더라도 제품 흐름이 끊기면 안 됨
+- provenance, license_status, confidence_score를 반드시 저장
+- 매출은 전문가 리드와 유료 리포트에서 발생
+- 고위험 답변은 확정 표현 금지
+
+기술 원칙:
+- 외부 API는 반드시 adapter interface 뒤에 숨길 것
+- mock provider로 먼저 완성하고 실제 연동은 교체 가능하게 설계
+- API 실패를 정상 플로우로 다룰 것
+- 테스트 가능하고 문서화된 코드 작성
+- 공통 응답 포맷, 에러 코드, requestId, 로깅 구현
+- DB migration 포함
+- README 충실하게 작성
+
+작업 방식:
+- 내가 단계별로 기능 구현을 지시할 것이다.
+- 각 단계마다:
+  1. 변경 계획 요약
+  2. 파일 생성/수정
+  3. 코드 구현
+  4. 테스트 추가
+  5. 실행 방법/검증 방법 정리
+를 반드시 포함하라.
+
+==================================================
+[PHASE 1 - REPO BOOTSTRAP]
+==================================================
+
+너는 위 MASTER PROMPT를 따른다.
+지금부터 monorepo를 초기화하라.
+
+목표:
+- apps/web
+- apps/api
+- packages/shared-types
+- docs
+- infra
+
+필수 구현:
+- Next.js App Router 기본 페이지
+- Spring Boot 기본 API
+- docker-compose (postgres, redis)
+- .env.example
+- README
+- /api/v1/health
+- 코드 포맷터/린터
+- 기본 에러 응답 포맷
+- requestId 처리
+- 공통 로깅
+- DB migration 도구 설정
+
+산출물:
+- 전체 디렉터리
+- 실행 가능한 초기 코드
+- 개발 커맨드 정리
+
+==================================================
+[PHASE 2 - DATABASE]
+==================================================
+
+너는 위 MASTER PROMPT를 따른다.
+아래 테이블을 모두 migration과 entity 수준으로 구현하라.
+
+대상 테이블:
+users
+project_members
+projects
+properties
+address_resolution_logs
+external_property_refs
+floor_plan_sources
+floor_plan_candidates
+floor_plan_files
+normalized_floor_plans
+normalized_plan_spaces
+normalized_plan_openings
+normalized_plan_walls
+plan_selection_events
+project_scopes
+style_presets
+project_style_selections
+generated_style_images
+process_catalogs
+process_guides
+process_checklists
+project_process_plans
+project_process_steps
+project_process_tasks
+visual_questions
+visual_question_images
+visual_answers
+expert_categories
+experts
+expert_category_links
+expert_service_regions
+expert_portfolios
+expert_leads
+expert_lead_events
+knowledge_articles
+faq_entries
+integration_call_logs
+ai_job_runs
+audit_logs
+
+필수:
+- migration SQL
+- JPA entity
+- repository
+- enum 분리
+- JSONB 매핑
+- 인덱스/제약조건
+- repository 테스트
+
+==================================================
+[PHASE 3 - ADDRESS SEARCH]
+==================================================
+
+너는 위 MASTER PROMPT를 따른다.
+주소 검색과 집 식별 모듈을 구현하라.
+
+백엔드 API:
+- POST /api/v1/address/search
+- POST /api/v1/address/detail-options
+- POST /api/v1/property/resolve
+
+필수 adapter interface:
+- KakaoLocalClient
+- JusoAddressClient
+- KaptClient
+- BuildingHubClient
+- HousingHubClient
+- VworldClient
+
+규칙:
+- 우선 mock adapter로 구현
+- integration_call_logs 기록
+- provider 실패 시 graceful fallback
+- DTO, mapper, service 분리
+
+프론트:
+- 홈 주소 검색 입력창
+- 검색 결과 리스트
+- 동/호 선택
+- 집 확정 버튼
+- loading/error/empty state 구현
+
+==================================================
+[PHASE 4 - PROJECT CREATION]
+==================================================
+
+너는 위 MASTER PROMPT를 따른다.
+프로젝트 생성/조회/대시보드를 구현하라.
+
+백엔드 API:
+- POST /api/v1/projects
+- GET /api/v1/projects
+- GET /api/v1/projects/{projectId}
+- PATCH /api/v1/projects/{projectId}
+- POST /api/v1/projects/{projectId}/property
+
+프론트:
+- 프로젝트 생성 모달
+- 프로젝트 목록
+- 프로젝트 홈 대시보드
+
+대시보드 카드:
+- 우리 집 요약
+- 지금 해야 할 일
+- 최근 질문
+- 추천 전문가 placeholder
+
+==================================================
+[PHASE 5 - FLOOR PLAN RESOLVER]
+==================================================
+
+너는 위 MASTER PROMPT를 따른다.
+핵심 기능인 도면 resolver를 구현하라.
+
+백엔드 API:
+- POST /api/v1/projects/{projectId}/floor-plans/resolve
+- GET /api/v1/projects/{projectId}/floor-plans
+- POST /api/v1/projects/{projectId}/floor-plans/{candidateId}/select
+- POST /api/v1/projects/{projectId}/floor-plans/upload
+- GET /api/v1/projects/{projectId}/floor-plans/{candidateId}/normalized
+
+핵심 로직:
+- 내부 캐시 조회
+- official plan adapter 조회
+- licensed plan adapter 조회
+- 유사 도면 fallback
+- approximate generator fallback
+- confidence scorer
+- provenance/license_status/access_scope 저장
+- normalized plan 저장
+
+프론트:
+- 도면 후보 리스트
+- 신뢰도 배지
+- 도면 미리보기
+- 후보 선택
+- 업로드 fallback
+- exact/high/approx/low 상태별 UI 분기
+
+==================================================
+[PHASE 6 - STYLE + PROCESS]
+==================================================
+
+너는 위 MASTER PROMPT를 따른다.
+스타일 이미지와 공정 플래너를 구현하라.
+
+백엔드 API:
+- POST /api/v1/projects/{projectId}/styles/generate
+- GET /api/v1/projects/{projectId}/styles/images
+- POST /api/v1/projects/{projectId}/styles/images/{imageId}/like
+- POST /api/v1/projects/{projectId}/process-plan/generate
+- GET /api/v1/projects/{projectId}/process-plan
+- GET /api/v1/projects/{projectId}/process-plan/steps/{stepKey}
+- PATCH /api/v1/projects/{projectId}/process-plan/tasks/{taskId}
+
+필수:
+- style preset seed
+- process guide seed
+- 거주 여부/공사 범위/유지 항목을 반영한 공정 분기
+- 스타일 이미지 mock provider
+- 공정 상세 페이지
+
+==================================================
+[PHASE 7 - VISUAL QA + EXPERT LEAD]
+==================================================
+
+너는 위 MASTER PROMPT를 따른다.
+사진 질문답변과 전문가 리드 기능을 구현하라.
+
+백엔드 API:
+- POST /api/v1/projects/{projectId}/visual-questions
+- GET /api/v1/projects/{projectId}/visual-questions
+- GET /api/v1/projects/{projectId}/visual-questions/{questionId}
+- GET /api/v1/expert-categories
+- GET /api/v1/experts
+- GET /api/v1/experts/{expertId}
+- POST /api/v1/projects/{projectId}/expert-leads
+
+필수:
+- 이미지 업로드
+- 프로젝트/공정 문맥 반영
+- 구조화된 answer format
+- risk level 분류
+- HIGH 이상 expert_required
+- 전문가 추천 로직
+- 프로젝트 요약/사진/질문 첨부 가능한 리드 payload
+
+프론트:
+- 사진 업로드 UI
+- 질문 등록 폼
+- 답변 카드
+- 관련 가이드 링크
+- 전문가 추천
+- 리드 생성 폼
+
+==================================================
+[PHASE 8 - ADMIN + CMS]
+==================================================
+
+너는 위 MASTER PROMPT를 따른다.
+운영 가능한 MVP 수준의 관리자 기능을 추가하라.
+
+구현 범위:
+- 관리자 라우트 보호
+- process guide CRUD
+- faq CRUD
+- knowledge article CRUD
+- experts 승인/정지
+- floor plan candidate 검수
+- integration logs 조회
+- ai job logs 조회
+- audit logs 기록
+
+추가:
+- USER/ADMIN demo 계정
+- seed 데이터
+- 로컬 데모 시나리오 문서

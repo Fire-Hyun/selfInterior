@@ -1,0 +1,20 @@
+{
+  "name": "selfinterior",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "packages/shared-types"
+  ],
+  "scripts": {
+    "format": "prettier --write . && node scripts/run-api-task.mjs spotlessApply",
+    "lint": "npm run lint --workspace @selfinterior/web && node scripts/run-api-task.mjs spotlessCheck",
+    "typecheck": "npm run build --workspace @selfinterior/shared-types && npm run typecheck --workspace @selfinterior/web && node scripts/run-api-task.mjs compileJava",
+    "test": "node scripts/run-api-task.mjs test",
+    "docs:check": "node scripts/docs-check.mjs",
+    "build": "npm run build --workspace @selfinterior/shared-types && npm run build --workspace @selfinterior/web && node scripts/run-api-task.mjs build"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  }
+}

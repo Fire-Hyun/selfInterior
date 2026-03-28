@@ -1,0 +1,5 @@
+.tools/
+apps/api/build/
+apps/web/.next/
+node_modules/
+packages/shared-types/dist/
