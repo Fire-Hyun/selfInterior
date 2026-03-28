@@ -2,6 +2,7 @@ package com.selfinterior.api.project;
 
 import com.selfinterior.api.common.api.ApiException;
 import com.selfinterior.api.common.api.ErrorCode;
+import com.selfinterior.api.expert.ExpertLeadService;
 import com.selfinterior.api.floorplan.FloorPlanCandidateEntity;
 import com.selfinterior.api.floorplan.FloorPlanCandidateRepository;
 import com.selfinterior.api.floorplan.FloorPlanSourceEntity;
@@ -41,6 +42,7 @@ public class ProjectHomeService {
   private final ProjectProcessStepRepository projectProcessStepRepository;
   private final VisualQuestionRepository visualQuestionRepository;
   private final VisualAnswerRepository visualAnswerRepository;
+  private final ExpertLeadService expertLeadService;
 
   public ProjectHomeResponse get(String projectId) {
     ProjectEntity project = findProject(projectId);
@@ -64,6 +66,8 @@ public class ProjectHomeService {
         latestQuestion == null
             ? null
             : visualAnswerRepository.findByQuestionId(latestQuestion.getId()).orElse(null);
+    ExpertLeadService.ProjectExpertCard expertCard =
+        expertLeadService.loadProjectHomeCard(projectId);
 
     return new ProjectHomeResponse(
         ProjectMapper.toHomeProject(project),
@@ -78,12 +82,7 @@ public class ProjectHomeService {
             processPlan,
             currentProcessStep),
         buildRecentQuestionCard(project.getId(), latestQuestion, latestAnswer),
-        buildPlaceholderCard(
-            "추천 전문가",
-            "PENDING_INTEGRATION",
-            "ExpertLead 도메인이 연결되면 현재 단계와 질문 이력을 반영한 추천 전문가가 여기에 표시됩니다.",
-            "전문가 모듈 준비 중",
-            "/projects/" + project.getId() + "/home#recommended-experts"));
+        buildRecommendedExpertCard(project.getId(), expertCard));
   }
 
   private ProjectEntity findProject(String projectId) {
@@ -222,6 +221,29 @@ public class ProjectHomeService {
         latestQuestion.getQuestionText(),
         latestAnswer != null && latestAnswer.isExpertRequired() ? "답변과 위험도 보기" : "질문 상세 보기",
         "/projects/" + projectId + "/qa");
+  }
+
+  private HomePlaceholderCardResponse buildRecommendedExpertCard(
+      UUID projectId, ExpertLeadService.ProjectExpertCard expertCard) {
+    if (expertCard == null) {
+      return buildPlaceholderCard(
+          "추천 전문가",
+          "PENDING_INTEGRATION",
+          "ExpertLead 도메인이 연결되면 현재 단계와 질문 이력을 반영한 추천 전문가가 여기에 표시됩니다.",
+          "전문가 모듈 준비 중",
+          "/projects/" + projectId + "/home#recommended-experts");
+    }
+
+    return new HomePlaceholderCardResponse(
+        "추천 전문가",
+        expertCard.categoryName(),
+        expertCard.companyName()
+            + (expertCard.recommendationReason() == null
+                    || expertCard.recommendationReason().isBlank()
+                ? ""
+                : " · " + expertCard.recommendationReason()),
+        "전문가 추천 보기",
+        "/projects/" + projectId + "/experts");
   }
 
   private HomePlaceholderCardResponse buildPlaceholderCard(

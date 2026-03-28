@@ -212,8 +212,8 @@ export function ProjectHomeScreen({ projectId }: { projectId: string }) {
 
             <article className="panel">
               <div className="section-head">
-                <p className="eyebrow">후속 모듈</p>
-                <h2>곧 연결될 카드</h2>
+                <p className="eyebrow">질문과 전문가</p>
+                <h2>최근 질문과 추천 전문가</h2>
               </div>
               <div className="stack">
                 <div id="recent-questions">

@@ -349,6 +349,14 @@ export function VisualQuestionScreen({ projectId }: { projectId: string }) {
                       {link.title}
                     </Link>
                   ))}
+                  {detail.answer.expertRequired ? (
+                    <Link
+                      className="link-button"
+                      href={`/projects/${projectId}/experts`}
+                    >
+                      전문가 추천과 문의 보기
+                    </Link>
+                  ) : null}
                 </div>
               </div>
             </div>

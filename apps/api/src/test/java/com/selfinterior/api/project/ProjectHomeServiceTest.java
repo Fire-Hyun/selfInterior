@@ -3,6 +3,7 @@ package com.selfinterior.api.project;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import com.selfinterior.api.expert.ExpertLeadService;
 import com.selfinterior.api.floorplan.ConfidenceGrade;
 import com.selfinterior.api.floorplan.FloorPlanCandidateEntity;
 import com.selfinterior.api.floorplan.FloorPlanCandidateRepository;
@@ -40,6 +41,7 @@ class ProjectHomeServiceTest {
   @Mock private ProjectProcessStepRepository projectProcessStepRepository;
   @Mock private VisualQuestionRepository visualQuestionRepository;
   @Mock private VisualAnswerRepository visualAnswerRepository;
+  @Mock private ExpertLeadService expertLeadService;
 
   @InjectMocks private ProjectHomeService projectHomeService;
 
@@ -98,6 +100,7 @@ class ProjectHomeServiceTest {
     when(projectProcessPlanRepository.findByProjectId(projectId)).thenReturn(Optional.empty());
     when(visualQuestionRepository.findByProjectIdOrderByCreatedAtDesc(projectId))
         .thenReturn(List.of());
+    when(expertLeadService.loadProjectHomeCard(projectId.toString())).thenReturn(null);
 
     var response = projectHomeService.get(projectId.toString());
 
@@ -131,6 +134,7 @@ class ProjectHomeServiceTest {
     when(projectProcessPlanRepository.findByProjectId(projectId)).thenReturn(Optional.empty());
     when(visualQuestionRepository.findByProjectIdOrderByCreatedAtDesc(projectId))
         .thenReturn(List.of());
+    when(expertLeadService.loadProjectHomeCard(projectId.toString())).thenReturn(null);
 
     var response = projectHomeService.get(projectId.toString());
 
@@ -139,5 +143,35 @@ class ProjectHomeServiceTest {
     assertThat(response.nextActions().get(0).status()).isEqualTo("READY");
     assertThat(response.nextActions().get(1).status()).isEqualTo("BLOCKED");
     assertThat(response.nextActions().get(2).status()).isEqualTo("BLOCKED");
+  }
+
+  @Test
+  void getBuildsRecommendedExpertCardWhenRecommendationExists() {
+    UUID projectId = UUID.randomUUID();
+
+    ProjectEntity project = new ProjectEntity();
+    project.setId(projectId);
+    project.setTitle("전문가 연결 프로젝트");
+    project.setProjectType(ProjectType.ISSUE_CHECK);
+    project.setLivingStatus(LivingStatus.OCCUPIED);
+
+    when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+    when(propertyRepository.findByProjectId(projectId)).thenReturn(Optional.empty());
+    when(floorPlanCandidateRepository.findByProjectIdOrderByConfidenceScoreDesc(projectId))
+        .thenReturn(List.of());
+    when(projectProcessPlanRepository.findByProjectId(projectId)).thenReturn(Optional.empty());
+    when(visualQuestionRepository.findByProjectIdOrderByCreatedAtDesc(projectId))
+        .thenReturn(List.of());
+    when(expertLeadService.loadProjectHomeCard(projectId.toString()))
+        .thenReturn(
+            new ExpertLeadService.ProjectExpertCard(
+                "세운 전기 설비", "전기 점검", "서비스 지역이 현재 집 주소와 일치", UUID.randomUUID().toString()));
+
+    var response = projectHomeService.get(projectId.toString());
+
+    assertThat(response.recommendedExperts().status()).isEqualTo("전기 점검");
+    assertThat(response.recommendedExperts().description()).contains("세운 전기 설비");
+    assertThat(response.recommendedExperts().primaryActionPath())
+        .isEqualTo("/projects/" + projectId + "/experts");
   }
 }

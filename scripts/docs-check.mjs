@@ -11,14 +11,17 @@ const requiredPaths = [
   'docs/design/category-address-project-floorplan.md',
   'docs/design/category-process-plan.md',
   'docs/design/category-visual-question.md',
+  'docs/design/category-expert-lead.md',
   'docs/adr/ADR-0001-monorepo-provider-slice.md',
   'docs/adr/ADR-0002-project-home-read-model.md',
   'docs/adr/ADR-0003-process-plan-catalog-snapshot.md',
   'docs/adr/ADR-0004-visual-question-sync-mock-analysis.md',
+  'docs/adr/ADR-0005-expert-recommendation-project-signals.md',
   'docs/issues/2026-03-28-local-env-and-secret-state.md',
   'docs/test-cases/phase-1-vertical-slice.md',
   'docs/test-cases/phase-2-process-plan.md',
   'docs/test-cases/phase-2-visual-question.md',
+  'docs/test-cases/phase-2-expert-lead.md',
   '.env.example',
 ];
 

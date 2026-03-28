@@ -17,6 +17,7 @@ export type ProcessStepStatus = 'TODO' | 'IN_PROGRESS' | 'DONE';
 export type ProcessTaskGroup = 'PREPARE' | 'DECISION' | 'NEXT';
 export type VisualQuestionStatus = 'PROCESSING' | 'COMPLETED';
 export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+export type ExpertLeadStatus = 'NEW' | 'CONTACTED' | 'QUOTED' | 'WON' | 'LOST';
 export type SpaceType =
   | 'LIVING_ROOM'
   | 'KITCHEN'
@@ -320,6 +321,83 @@ export interface VisualQuestionDetailResponse {
   answer: VisualAnswer;
   images: VisualQuestionImage[];
   relatedGuideLinks: GuideLink[];
+}
+
+export interface ExpertCategory {
+  id: string;
+  key: string;
+  name: string;
+}
+
+export interface ExpertServiceRegion {
+  sido: string;
+  sigungu?: string;
+}
+
+export interface ExpertPortfolio {
+  id: string;
+  title: string;
+  description?: string;
+  storageKey?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface ExpertSummary {
+  id: string;
+  companyName: string;
+  contactName: string;
+  phone?: string;
+  email?: string;
+  introText?: string;
+  minBudget?: number;
+  maxBudget?: number;
+  partialWorkSupported: boolean;
+  semiSelfCollaborationSupported: boolean;
+  responseScore?: number;
+  reviewScore?: number;
+  categoryKeys: string[];
+  categoryNames: string[];
+  serviceRegions: ExpertServiceRegion[];
+  portfolios: ExpertPortfolio[];
+  recommendationScore?: number;
+  recommendationReason?: string;
+  licenseInfo?: Record<string, unknown>;
+}
+
+export interface ExpertCategoryListResponse {
+  categories: ExpertCategory[];
+}
+
+export interface ExpertListResponse {
+  experts: ExpertSummary[];
+}
+
+export interface ExpertDetailResponse {
+  expert: ExpertSummary;
+  leadStatuses: ExpertLeadStatus[];
+}
+
+export interface ExpertRecommendationResponse {
+  primaryCategoryKey?: string;
+  primaryCategoryName?: string;
+  secondaryCategoryKey?: string;
+  secondaryCategoryName?: string;
+  rationale: string;
+  experts: ExpertSummary[];
+}
+
+export interface CreateExpertLeadRequest {
+  expertId: string;
+  requestedCategoryKey: string;
+  budgetMin?: number;
+  budgetMax?: number;
+  desiredStartDate?: string;
+  message: string;
+}
+
+export interface CreateExpertLeadResponse {
+  leadId: string;
+  leadStatus: ExpertLeadStatus;
 }
 
 export interface AttachPropertyRequest {
